@@ -1,0 +1,37 @@
+# Maven build directories
+/target/
+/out/
+
+# Git repository files
+/.git/
+/.gitignore
+
+# Maven wrapper files (if not used)
+/.mvn/wrapper/maven-wrapper.jar
+/mvnw
+/mvnw.cmd
+
+# IDE and editor directories and files
+/.idea/
+/.vscode/
+/*.iml
+/*.ipr
+/*.iws
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Logs and temporary files
+*.log
+*.tmp
+*.swp
+*.swo
+
+# Environment variables and secrets
+.env
+*.env
+
+# Docker-specific files (optional, to prevent nesting)
+/docker-compose.yml
+

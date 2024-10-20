@@ -1,0 +1,11 @@
+server:
+  port: ${MOVIE_MATE_RECOMMENDATION_SERVICE_PORT:7040}
+
+spring:
+  application:
+    name: recommendation-service
+
+logging:
+  level:
+    org:
+      springframework: INFO

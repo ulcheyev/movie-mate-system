@@ -1,0 +1,11 @@
+server:
+  port: ${MOVIE_MATE_WATCHLIST_SERVICE_PORT:7020}
+
+spring:
+  application:
+    name: watchlist-service
+
+logging:
+  level:
+    org:
+      springframework: INFO

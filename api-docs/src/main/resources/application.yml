@@ -1,0 +1,12 @@
+server:
+  port: ${MOVIE_MATE_API_DOCS_PORT:7010}
+
+spring:
+  application:
+    name: api-docs
+
+logging:
+  level:
+    org:
+      springframework: INFO
+
