@@ -1,0 +1,11 @@
+server:
+  port: ${MOVIE_MATE_MOVIE_SERVICE_PORT:7060}
+
+spring:
+  application:
+    name: movie-service
+
+logging:
+  level:
+    org:
+      springframework: INFO

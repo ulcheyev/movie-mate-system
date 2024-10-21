@@ -1,0 +1,11 @@
+server:
+  port: ${MOVIE_MATE_DISCOVERY_SERVER_PORT:7070}
+
+spring:
+  application:
+    name: discovery-server
+
+logging:
+  level:
+    org:
+      springframework: INFO
