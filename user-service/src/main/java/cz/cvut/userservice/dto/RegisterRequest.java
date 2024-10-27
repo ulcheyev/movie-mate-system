@@ -10,7 +10,7 @@ public record RegisterRequest(
         @Schema(description = "username", example = "manki_228")
         @NotBlank(message = "Name cannot be blank.")
         @Size(min = 3, max = 50, message = "Username must be between 3 and 50 characters.")
-        @Pattern(regexp = "\\w", message = "Username can only contain letters, numbers, and underscores.")
+        @Pattern(regexp = "\\w+", message = "Username can only contain letters, numbers, and underscores.")
         String username,
 
         @Schema(description = "email", example = "manki@gmail.com")

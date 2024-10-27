@@ -18,7 +18,7 @@ public class UserHistory implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "history_seq_gen")
-    @SequenceGenerator(name = "history_seq_gen", sequenceName = "user_history_id_seq")
+    @SequenceGenerator(name = "history_seq_gen", sequenceName = "user_history_id_seq", allocationSize = 1)
     private Long id;
 
     @Column(name = "created_at", nullable = false)

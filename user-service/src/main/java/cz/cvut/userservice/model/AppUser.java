@@ -1,10 +1,6 @@
 package cz.cvut.userservice.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
@@ -13,10 +9,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.List;
 
 @Table
 @Entity(name = "app_user")
@@ -29,7 +25,7 @@ public class AppUser implements UserDetails, Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq_gen")
-    @SequenceGenerator(name = "user_seq_gen", sequenceName = "app_user_id_seq")
+    @SequenceGenerator(name = "user_seq_gen", sequenceName = "app_user_id_seq", allocationSize = 1)
     private Long id;
 
     @Column(name = "username", length = 50, unique = true, nullable = false)
@@ -45,10 +41,12 @@ public class AppUser implements UserDetails, Serializable {
     private String fullName;
 
     @Column(name = "is_enabled", nullable = false)
-    private Boolean isEnabled;
+    @Builder.Default
+    private Boolean isEnabled = true;
 
     @Column(name = "is_not_banned", nullable = false)
-    private Boolean isNotBanned;
+    @Builder.Default
+    private Boolean isNotBanned = true;
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "metadata", length = 500, columnDefinition = "jsonb")
@@ -64,13 +62,20 @@ public class AppUser implements UserDetails, Serializable {
             joinColumns = @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_user_roles_on_app_user")),
             inverseJoinColumns = @JoinColumn(name = "role_id", foreignKey = @ForeignKey(name = "fk_user_roles_on_role"))
     )
-    private Set<UserRole> roles = new HashSet<>();
+    @Builder.Default
+    private List<UserRole> roles = new ArrayList<>();
+
+    public void addRole(UserRole... rolesToAdd) {
+        if (rolesToAdd != null && rolesToAdd.length > 0) {
+            roles.addAll(Arrays.asList(rolesToAdd));
+        }
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles.stream()
                 .map(userRole -> new SimpleGrantedAuthority(userRole.getRole().name()))
-                .collect(Collectors.toSet());
+                .toList();
     }
 
     @Override

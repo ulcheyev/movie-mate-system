@@ -1,13 +1,13 @@
 package cz.cvut.userservice.dto;
 
-import java.util.Set;
+import java.util.List;
 
 public record AppUserDto(
         Long id,
         String username,
         String email,
         String fullName,
-        Set<UserRoleDto> roles,
+        List<String> roles,
         Boolean isEnabled,
         Boolean isNotBanned
 ) {}

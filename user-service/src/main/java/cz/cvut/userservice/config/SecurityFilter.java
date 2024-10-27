@@ -27,8 +27,8 @@ import java.io.IOException;
 @Slf4j(topic = "USER_SERVICE_SECURITY_FILTER")
 @RequiredArgsConstructor
 public class SecurityFilter extends OncePerRequestFilter {
-    private static final String BEARER_PREFIX = "Bearer ";
-    private static final String AUTH_HEADER = "Authorization";
+    public static final String BEARER_PREFIX = "Bearer ";
+    public static final String AUTH_HEADER = "Authorization";
 
     private final TokenService tokenService;
     private final InternalAppUserService internalAppUserService;
