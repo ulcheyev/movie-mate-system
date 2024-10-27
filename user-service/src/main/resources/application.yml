@@ -5,6 +5,12 @@ spring:
   application:
     name: user-service
 
+security:
+  jwt:
+    secret-key: ${JWT_SECRET_KEY}
+    access-expiration: ${JWT_ACCESS_EXPIRATION_TIME}
+    refresh-expiration: ${JWT_REFRESH_EXPIRATION_TIME}
+
 logging:
   level:
     org:
