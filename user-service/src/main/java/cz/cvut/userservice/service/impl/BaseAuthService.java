@@ -2,15 +2,14 @@ package cz.cvut.userservice.service.impl;
 
 import cz.cvut.userservice.dto.*;
 import cz.cvut.userservice.dto.mapper.AppUserMapper;
-import cz.cvut.userservice.exception.DuplicateException;
 import cz.cvut.userservice.exception.JwtErrorException;
-import cz.cvut.userservice.exception.NotFoundException;
 import cz.cvut.userservice.model.AppUser;
 import cz.cvut.userservice.model.Role;
 import cz.cvut.userservice.model.UserRole;
 import cz.cvut.userservice.service.AuthService;
 import cz.cvut.userservice.service.InternalAppUserService;
 import cz.cvut.userservice.service.TokenService;
+import cz.cvut.userservice.util.ValidationUtil;
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,8 +19,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.function.Function;
-
 @Service
 @Slf4j(topic = "BASE_AUTH_SERVICE")
 @RequiredArgsConstructor
@@ -29,6 +26,7 @@ public class BaseAuthService implements AuthService {
     private final AppUserMapper appUserMapper;
     private final InternalAppUserService internalAppUserService;
     private final TokenService tokenService;
+    private final ValidationUtil validationUtil;
     private final AuthenticationManager authManager;
     private final PasswordEncoder passwordEncoder;
 
@@ -69,18 +67,6 @@ public class BaseAuthService implements AuthService {
     }
 
     @Override
-    public AppUserClaims validateToken(String token) {
-        try {
-            AppUser appUser = extractAppUser(token);
-
-            return appUserMapper.toAppUserClaims(appUser);
-        } catch (JwtException e) {
-            log.error("Access token is invalid: {}", e.getMessage());
-            throw new JwtErrorException("Access token is invalid");
-        }
-    }
-
-    @Override
     public TokenPairDto refreshToken(String refreshToken) {
         try {
             AppUser appUser = extractAppUser(refreshToken);
@@ -113,16 +99,7 @@ public class BaseAuthService implements AuthService {
     }
 
     private void validateRegisterRequest(RegisterRequest registerRequest) {
-        checkDuplicate(registerRequest.username(), internalAppUserService::findUserByUsername, "username");
-        checkDuplicate(registerRequest.email(), internalAppUserService::findUserByEmail, "email");
-    }
-
-    private <T> void checkDuplicate(T value, Function<T, AppUser> findFunc, String fieldName) {
-        try {
-            findFunc.apply(value);
-            throw new DuplicateException(String.format("User with %s %s already exists", fieldName, value));
-        } catch (NotFoundException ignored) {
-            // Duplicates not found
-        }
+       validationUtil.checkDuplicate(registerRequest.username(), internalAppUserService::findUserByUsername, "username");
+       validationUtil.checkDuplicate(registerRequest.email(), internalAppUserService::findUserByEmail, "email");
     }
 }

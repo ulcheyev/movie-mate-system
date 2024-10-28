@@ -56,7 +56,7 @@ public class AppUser implements UserDetails, Serializable {
     @PrimaryKeyJoinColumn
     private UserHistory userHistory;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_user_roles_on_app_user")),

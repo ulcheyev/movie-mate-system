@@ -1,6 +1,9 @@
 package cz.cvut.userservice.rest;
 
-import cz.cvut.userservice.dto.*;
+import cz.cvut.userservice.dto.AuthorizationResponse;
+import cz.cvut.userservice.dto.LoginRequest;
+import cz.cvut.userservice.dto.RegisterRequest;
+import cz.cvut.userservice.dto.TokenPairDto;
 import cz.cvut.userservice.dto.error.ApiErrorMultipleResponses;
 import cz.cvut.userservice.dto.error.ApiErrorSingleResponse;
 import cz.cvut.userservice.exception.JwtErrorException;
@@ -10,17 +13,12 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import static cz.cvut.userservice.config.SecurityFilter.AUTH_HEADER;
-import static cz.cvut.userservice.config.SecurityFilter.BEARER_PREFIX;
 
 @RestController
 @RequestMapping("/auth")
@@ -52,52 +50,22 @@ public class AuthController {
             value = "/login",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AuthorizationResponse> signIn(@RequestBody @Valid LoginRequest request) {
+    public ResponseEntity<AuthorizationResponse> login(@RequestBody @Valid LoginRequest request) {
         log.info("Request received to login user: {}", request);
         return ResponseEntity.ok(authService.login(request));
     }
 
-    @Operation(summary = "Refresh token")
+    @Operation(summary = "Refresh access token")
     @ApiResponse(responseCode = "200", description = "Access token has been refreshed successfully.")
     @ApiResponse(responseCode = "403", description = "Something goes wrong while validating refresh token.", content = @Content(schema = @Schema(implementation = ApiErrorSingleResponse.class)))
     @PostMapping(value = "/refresh-token")
-    public ResponseEntity<String> refreshToken(HttpServletRequest req, HttpServletResponse res) {
+    public ResponseEntity<TokenPairDto> refreshToken(@RequestParam("refreshToken") String refreshToken) {
         log.info("Request received to refresh access token");
 
-        final String authHeader = req.getHeader(AUTH_HEADER);
-        if (authHeader == null || !authHeader.startsWith(BEARER_PREFIX))
+        if (refreshToken == null || refreshToken.isEmpty())
             throw new JwtErrorException("Refresh token is not detected in auth header.");
+        TokenPairDto tokenPair = authService.refreshToken(refreshToken);
 
-        final String refreshToken = authHeader.substring(BEARER_PREFIX.length());
-        authService.refreshToken(refreshToken);
-
-        return ResponseEntity.ok("Refreshed successfully.");
-    }
-
-    @Operation(summary = "Validate token")
-    @ApiResponse(responseCode = "200", description = "Access token is valid.", content = @Content(schema = @Schema(implementation = AppUserClaims.class)))
-    @ApiResponse(responseCode = "403", description = "Error occurred while validating token.", content = @Content(schema = @Schema(implementation = ApiErrorSingleResponse.class)))
-    @ApiResponse(responseCode = "400", description = "Invalid access token and refresh token is not specified.")
-    @PostMapping(value = "/validate-token", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AppUserClaims> validateToken(
-            @RequestHeader("Authorization") String authHeader,
-            @RequestParam(required = false) String refreshToken
-    ) {
-        log.info("Request received to validate access token.");
-
-        String token = authHeader.replace("Bearer ", "");
-        AppUserClaims details;
-        try {
-            details = authService.validateToken(token);
-        } catch (JwtErrorException ex) {
-            if (refreshToken != null) { // Token is invalid or expired, try to refresh
-                TokenPairDto newToken = authService.refreshToken(refreshToken);
-                details = authService.validateToken(newToken.accessToken());
-            } else {
-                return ResponseEntity.badRequest().build();
-            }
-        }
-
-        return ResponseEntity.ok(details);
+        return ResponseEntity.ok(tokenPair);
     }
 }

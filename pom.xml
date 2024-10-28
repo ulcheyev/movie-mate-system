@@ -38,8 +38,6 @@
         <module>watchlist-service</module>
     </modules>
 
-
-
     <dependencyManagement>
         <dependencies>
             <dependency>

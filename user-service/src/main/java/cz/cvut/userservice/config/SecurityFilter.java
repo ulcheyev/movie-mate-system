@@ -45,33 +45,38 @@ public class SecurityFilter extends OncePerRequestFilter {
 
         String token = authHeader.substring(BEARER_PREFIX.length());
         try {
-            String username = tokenService.extractUsername(token);
-            if (isNotAuthenticated(username)) {
-                UserDetails userDetails = internalAppUserService.loadUserByUsername(username);
-                checkAccountLocking(userDetails);
-                if (tokenService.validateToken(token, userDetails)) {
-                    SecurityContext context = SecurityContextHolder.createEmptyContext();
-                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                            userDetails,
-                            userDetails.getUsername(),
-                            userDetails.getAuthorities()
-                    );
-
-                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    context.setAuthentication(authToken);
-                    SecurityContextHolder.setContext(context);
-                }
-            }
-
+            processToken(token, request);
             filterChain.doFilter(request, response);
         } catch (JwtException e) {
-            handlerExceptionResolver.resolveException(
-                    request,
-                    response,
-                    null,
-                    new JwtErrorException("Error while processing token: " + e.getMessage())
-            );
+            handleJwtException(e, request, response);
+        } catch (UserBannedException e) {
+            handleUserBannedException(e, request, response);
         }
+    }
+
+    private void processToken(String token, HttpServletRequest request) {
+        String username = tokenService.extractUsername(token);
+
+        if (isNotAuthenticated(username)) {
+            UserDetails userDetails = internalAppUserService.loadUserByUsername(username);
+            checkAccountLocking(userDetails);
+
+            if (tokenService.validateToken(token, userDetails))
+                setAuthContext(userDetails, request);
+        }
+    }
+
+    private void setAuthContext(UserDetails userDetails, HttpServletRequest request) {
+        SecurityContext context = SecurityContextHolder.createEmptyContext();
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                userDetails,
+                userDetails.getUsername(),
+                userDetails.getAuthorities()
+        );
+
+        authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        context.setAuthentication(authToken);
+        SecurityContextHolder.setContext(context);
     }
 
     private boolean isNotAuthenticated(String username) {
@@ -83,9 +88,29 @@ public class SecurityFilter extends OncePerRequestFilter {
     }
 
     private void checkAccountLocking(UserDetails userDetails) {
-        if(!userDetails.isAccountNonLocked()) {
-            log.warn("User {} with banned account tried to access the app.", userDetails.getUsername());
-            throw new UserBannedException("Account with username %s is banned.");
+        String username = userDetails.getUsername();
+
+        if (!userDetails.isAccountNonLocked()) {
+            log.warn("User {} with banned account tried to access the app.", username);
+            throw new UserBannedException(String.format("Account with username %s is banned.", username));
         }
+    }
+
+    private void handleJwtException(JwtException e, HttpServletRequest request, HttpServletResponse response) {
+        handlerExceptionResolver.resolveException(
+                request,
+                response,
+                null,
+                new JwtErrorException("Error while processing token: " + e.getMessage())
+        );
+    }
+
+    private void handleUserBannedException(UserBannedException e, HttpServletRequest request, HttpServletResponse response) {
+        handlerExceptionResolver.resolveException(
+                request,
+                response,
+                null,
+                new UserBannedException(e.getMessage())
+        );
     }
 }

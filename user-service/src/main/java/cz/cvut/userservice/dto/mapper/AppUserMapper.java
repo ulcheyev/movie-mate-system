@@ -1,10 +1,11 @@
 package cz.cvut.userservice.dto.mapper;
 
-import cz.cvut.userservice.dto.AppUserClaims;
+import cz.cvut.userservice.dto.AppUserDetailsDto;
 import cz.cvut.userservice.dto.AppUserDto;
+import cz.cvut.userservice.dto.UpdateUserRequest;
 import cz.cvut.userservice.model.AppUser;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import cz.cvut.userservice.model.UserHistory;
+import org.mapstruct.*;
 
 import java.util.List;
 
@@ -15,7 +16,13 @@ public interface AppUserMapper {
     AppUserDto toDto(AppUser appUser);
 
     @Mapping(target = "roles", expression = "java(rolesToString(appUser))")
-    AppUserClaims toAppUserClaims(AppUser appUser);
+    @Mapping(target = "id", expression = "java(appUser.getId())")
+    @Mapping(target = "userHistory", source = "userHistory")
+    AppUserDetailsDto toDetailsDto(AppUser appUser, UserHistory userHistory);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "password", ignore = true)
+    void updateAppUserFromRequest(UpdateUserRequest request, @MappingTarget AppUser appUser);
 
     default List<String> rolesToString(AppUser appUser) {
         return appUser.getRoles().stream()

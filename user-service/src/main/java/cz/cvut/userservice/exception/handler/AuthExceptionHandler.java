@@ -46,10 +46,10 @@ public class AuthExceptionHandler {
                 status,
                 ex.getErrorType(),
                 ex.getMessage(),
-                "Malformed token has been received.",
+                "Token was expired or malformed.",
                 request,
                 ex.getCause(),
-                new String[]{"Please contact support for further assistance."}
+                new String[]{"Check the token format or refresh token."}
         );
 
         return new ResponseEntity<>(errorResponse, status);
