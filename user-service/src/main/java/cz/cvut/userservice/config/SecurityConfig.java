@@ -1,5 +1,8 @@
 package cz.cvut.userservice.config;
 
+import cz.cvut.userservice.config.filter.FilterLevelExceptionHandler;
+import cz.cvut.userservice.config.filter.SecurityFilter;
+import cz.cvut.userservice.exception.handler.BaseAccessDeniedHandler;
 import cz.cvut.userservice.service.InternalAppUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -13,6 +16,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer;
+import org.springframework.security.config.annotation.web.configurers.ExceptionHandlingConfigurer;
 import org.springframework.security.config.core.GrantedAuthorityDefaults;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -30,6 +34,8 @@ import java.util.List;
 public class SecurityConfig {
     private final InternalAppUserService internalAppUserService;
     private final SecurityFilter securityFilter;
+    private final FilterLevelExceptionHandler filterLevelExceptionHandler;
+    private final BaseAccessDeniedHandler baseAccessDeniedHandler;
 
     @Bean
     static GrantedAuthorityDefaults grantedAuthorityDefaults() {
@@ -44,7 +50,9 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(getRequestsCustomizer())
                 .authenticationManager(authenticationManager)
+                .exceptionHandling(getExceptionHandlingCustomizer())
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(filterLevelExceptionHandler, SecurityFilter.class)
                 .build();
     }
 
@@ -86,8 +94,11 @@ public class SecurityConfig {
         return auth -> auth
                 .requestMatchers("/auth/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/docs/**").permitAll()
-                .requestMatchers("/management/**").hasAnyRole("ADMIN")
                 .anyRequest()
                 .authenticated();
+    }
+
+    private Customizer<ExceptionHandlingConfigurer<HttpSecurity>> getExceptionHandlingCustomizer() {
+        return configurer -> configurer.accessDeniedHandler(baseAccessDeniedHandler);
     }
 }

@@ -1,5 +1,6 @@
 package cz.cvut.userservice.initializer;
 
+import cz.cvut.userservice.exception.NotFoundException;
 import cz.cvut.userservice.model.AppUser;
 import cz.cvut.userservice.model.Role;
 import cz.cvut.userservice.model.UserRole;
@@ -30,8 +31,10 @@ public class DefaultUserInitializer {
 
     @Bean
     public CommandLineRunner init() {
-        if (internalAppUserService.findUserByUsername(rootUsername) != null)
-            return args -> {};
+        try {
+            if (internalAppUserService.findUserByUsername(rootUsername) != null)
+                return args -> {};
+        } catch (NotFoundException ignored) {}
 
         String hashedPassword = passwordEncoder.encode(rootPassword);
         return args -> {

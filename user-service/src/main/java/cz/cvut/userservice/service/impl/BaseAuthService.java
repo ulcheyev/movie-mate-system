@@ -38,6 +38,8 @@ public class BaseAuthService implements AuthService {
         AppUser appUser = loginRequest.identifier().contains("@")
                 ? internalAppUserService.findUserByEmail(loginRequest.identifier())
                 : internalAppUserService.findUserByUsername(loginRequest.identifier());
+        validationUtil.checkUserBannedOrDeleted(appUser);
+
         authManager.authenticate(new UsernamePasswordAuthenticationToken(
                 appUser.getUsername(),
                 loginRequest.password()
@@ -99,7 +101,7 @@ public class BaseAuthService implements AuthService {
     }
 
     private void validateRegisterRequest(RegisterRequest registerRequest) {
-       validationUtil.checkDuplicate(registerRequest.username(), internalAppUserService::findUserByUsername, "username");
+       validationUtil.checkDuplicate(registerRequest.username().toLowerCase(), internalAppUserService::findUserByUsername, "username");
        validationUtil.checkDuplicate(registerRequest.email(), internalAppUserService::findUserByEmail, "email");
     }
 }

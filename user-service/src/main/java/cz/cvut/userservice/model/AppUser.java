@@ -42,11 +42,11 @@ public class AppUser implements UserDetails, Serializable {
 
     @Column(name = "is_enabled", nullable = false)
     @Builder.Default
-    private Boolean isEnabled = true;
+    private Boolean enabled = true;
 
     @Column(name = "is_not_banned", nullable = false)
     @Builder.Default
-    private Boolean isNotBanned = true;
+    private Boolean notBanned = true;
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "metadata", length = 500, columnDefinition = "jsonb")
@@ -80,11 +80,11 @@ public class AppUser implements UserDetails, Serializable {
 
     @Override
     public boolean isAccountNonLocked() {
-        return isNotBanned;
+        return notBanned;
     }
 
     @Override
     public boolean isEnabled() {
-        return isEnabled;
+        return enabled;
     }
 }

@@ -2,11 +2,13 @@ package cz.cvut.userservice.exception.handler;
 
 import cz.cvut.userservice.dto.error.ApiErrorSingleResponse;
 import cz.cvut.userservice.exception.MovieMateBaseException;
+import cz.cvut.userservice.exception.RestrictException;
 import cz.cvut.userservice.util.ApiErrorFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -49,6 +51,42 @@ public class GlobalExceptionHandler {
                 request,
                 ex.getCause(),
                 new String[]{"Check application logs for more details."}
+        );
+
+        return new ResponseEntity<>(errorResponse, status);
+    }
+
+    @ExceptionHandler(RestrictException.class)
+    @ResponseBody
+    public ResponseEntity<ApiErrorSingleResponse> handleRestrictException(RestrictException ex, WebRequest request) {
+        HttpStatus status = HttpStatus.FORBIDDEN;
+
+        ApiErrorSingleResponse errorResponse = apiErrorFactory.createApiErrorResponse(
+                status,
+                ex.getErrorType(),
+                ex.getMessage(),
+                "This action is not allowed for this user.",
+                request,
+                ex.getCause(),
+                new String[]{"Please contact the system administrator for further information."}
+        );
+
+        return new ResponseEntity<>(errorResponse, status);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseBody
+    public ResponseEntity<ApiErrorSingleResponse> handleAccessDenied(AccessDeniedException ex, WebRequest request) {
+        HttpStatus status = HttpStatus.FORBIDDEN;
+
+        ApiErrorSingleResponse errorResponse = apiErrorFactory.createApiErrorResponse(
+                status,
+                "ACCESS_DENIED",
+                ex.getMessage(),
+                "Access is restricted. Please check your permissions or contact support.",
+                request,
+                ex.getCause(),
+                new String[]{"Ensure you have the necessary permissions.", "Contact support if you believe this is an error."}
         );
 
         return new ResponseEntity<>(errorResponse, status);

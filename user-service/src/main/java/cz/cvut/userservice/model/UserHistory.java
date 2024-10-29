@@ -17,8 +17,6 @@ import java.time.LocalDateTime;
 public class UserHistory implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "history_seq_gen")
-    @SequenceGenerator(name = "history_seq_gen", sequenceName = "user_history_id_seq", allocationSize = 1)
     private Long id;
 
     @Column(name = "created_at", nullable = false)
@@ -27,10 +25,10 @@ public class UserHistory implements Serializable {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
-    @Column(name = "deleted_at", nullable = false)
+    @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
-    @Column(name = "banned_at", nullable = false)
+    @Column(name = "banned_at")
     private LocalDateTime bannedAt;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -45,11 +43,11 @@ public class UserHistory implements Serializable {
     @PrePersist
     @PreUpdate
     protected void validateTimestamps() {
-        if (updatedAt.isAfter(createdAt))
+        if (updatedAt.isBefore(createdAt))
             throw new InvalidTimestampException("Date of updating must be after or equal to date of creation");
-        if (deletedAt.isAfter(updatedAt))
+        if (deletedAt != null && deletedAt.isBefore(updatedAt))
             throw new InvalidTimestampException("Date of deletion must be after or equal to date of updating");
-        if (bannedAt.isAfter(updatedAt))
+        if (bannedAt != null && bannedAt.isBefore(updatedAt))
             throw new InvalidTimestampException("Date of ban must be after or equal to date of updating");
     }
 }

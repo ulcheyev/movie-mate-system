@@ -1,6 +1,8 @@
 package cz.cvut.userservice.service.impl;
 
+import cz.cvut.userservice.aspect.annotation.OnRootRestriction;
 import cz.cvut.userservice.dto.AppUserDto;
+import cz.cvut.userservice.dto.SetNewRolesRequest;
 import cz.cvut.userservice.dto.UpdateUserRequest;
 import cz.cvut.userservice.dto.mapper.AppUserMapper;
 import cz.cvut.userservice.exception.NotFoundException;
@@ -9,7 +11,6 @@ import cz.cvut.userservice.model.Role;
 import cz.cvut.userservice.model.UserHistory;
 import cz.cvut.userservice.model.UserRole;
 import cz.cvut.userservice.repository.AppUserRepository;
-import cz.cvut.userservice.repository.UserHistoryRepository;
 import cz.cvut.userservice.repository.UserRoleRepository;
 import cz.cvut.userservice.service.ExternalAppUserService;
 import cz.cvut.userservice.service.InternalAppUserService;
@@ -33,7 +34,6 @@ import java.util.Objects;
 public class BaseAppUserService implements InternalAppUserService, ExternalAppUserService {
     private final AppUserMapper appUserMapper;
     private final AppUserRepository appUserRepository;
-    private final UserHistoryRepository userHistoryRepository;
     private final UserRoleRepository userRoleRepository;
     private final ValidationUtil validationUtil;
     private final ObjectProvider<PasswordEncoder> passwordEncoderProvider;
@@ -56,17 +56,6 @@ public class BaseAppUserService implements InternalAppUserService, ExternalAppUs
     }
 
     @Override
-    public UserHistory findUserHistoryById(Long id) {
-        return userHistoryRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(String.format("User's history with ID: %s not found", id)));
-    }
-
-    @Override
-    public void updateUserHistory(UserHistory userHistory) {
-        userHistoryRepository.save(userHistory);
-    }
-
-    @Override
     public UserRole findUserRoleByRole(Role role) {
         return userRoleRepository.findByRole(role)
                 .orElseThrow(() -> new NotFoundException(String.format("Role %s not found", role.name())));
@@ -79,24 +68,23 @@ public class BaseAppUserService implements InternalAppUserService, ExternalAppUs
                .username(appUser.getUsername())
                .password(appUser.getPassword())
                .authorities(appUser.getAuthorities())
-               .accountLocked(!appUser.getIsNotBanned())
+               .accountLocked(!appUser.getNotBanned())
+               .disabled(!appUser.getEnabled())
                .build();
     }
 
     @Override
     @Transactional
+    @OnRootRestriction
     public AppUserDto getUserByUsername(String username, boolean details) {
         AppUser appUser = findUserByUsername(username);
-        UserRole adminRole = findUserRoleByRole(Role.ADMIN);
-        if (appUser.getRoles().contains(adminRole))
-            return AppUserDto.builder().build();
 
         return hasDetails(appUser, details);
     }
 
     private AppUserDto hasDetails(AppUser appUser, boolean details) {
         if (details) {
-            UserHistory userHistory = findUserHistoryById(appUser.getId());
+            UserHistory userHistory = appUser.getUserHistory();
             return appUserMapper.toDetailsDto(appUser, userHistory);
         }
         return appUserMapper.toDto(appUser);
@@ -106,12 +94,11 @@ public class BaseAppUserService implements InternalAppUserService, ExternalAppUs
     @Transactional
     public AppUserDto updateUser(String username, UpdateUserRequest request) {
         AppUser appUser = findUserByUsername(username);
-        LocalDateTime now = LocalDateTime.now();
 
         validateUpdateRequest(request);
         appUserMapper.updateAppUserFromRequest(request, appUser);
-        UserHistory userHistory = findUserHistoryById(appUser.getId());
-        userHistory.setUpdatedAt(now);
+        UserHistory userHistory = appUser.getUserHistory();
+        userHistory.setUpdatedAt(LocalDateTime.now());
 
         if (Objects.nonNull(request.password()) && !request.password().isEmpty()) {
             PasswordEncoder passwordEncoder = passwordEncoderProvider.getIfAvailable();
@@ -120,8 +107,75 @@ public class BaseAppUserService implements InternalAppUserService, ExternalAppUs
             appUser.setPassword(hashedPassword);
         }
 
+        appUser.setUserHistory(userHistory);
         AppUser saved = save(appUser);
         return appUserMapper.toDto(saved);
+    }
+
+    @Override
+    @Transactional
+    @OnRootRestriction
+    public AppUserDto banUserByUsername(String username) {
+        AppUser updated = banOrUnbanUser(username, true);
+        return appUserMapper.toDto(updated);
+    }
+
+    @Override
+    @Transactional
+    @OnRootRestriction
+    public AppUserDto unbanUserByUsername(String username) {
+        AppUser updated = banOrUnbanUser(username, false);
+        return appUserMapper.toDto(updated);
+    }
+
+    @Override
+    @Transactional
+    @OnRootRestriction
+    public AppUserDto setNewRoles(String username, SetNewRolesRequest request) {
+        AppUser appUser = findUserByUsername(username);
+        Role[] rolesToAdd = request.roles();
+
+        UserRole[] converted = new UserRole[rolesToAdd.length];
+        for (int i = 0; i < request.roles().length; i++)
+            converted[i] = findUserRoleByRole(rolesToAdd[i]);
+
+        appUser.addRole(converted);
+        AppUser saved = save(appUser);
+        return appUserMapper.toDto(saved);
+    }
+
+    private AppUser banOrUnbanUser(String username, boolean isBan) {
+        AppUser appUser = findUserByUsername(username);
+        LocalDateTime now = LocalDateTime.now();
+
+        UserHistory userHistory = appUser.getUserHistory();
+        userHistory.setUpdatedAt(now);
+        if (isBan) {
+            appUser.setNotBanned(false);
+            userHistory.setBannedAt(now);
+        } else {
+            appUser.setNotBanned(true);
+            userHistory.setBannedAt(null);
+        }
+
+        appUser.setUserHistory(userHistory);
+        return save(appUser);
+    }
+
+    @Override
+    @Transactional
+    @OnRootRestriction
+    public void deleteUserByUsername(String username) {
+        AppUser appUser = findUserByUsername(username);
+
+        UserHistory userHistory = appUser.getUserHistory();
+        userHistory.setUpdatedAt(LocalDateTime.now());
+        appUser.setUserHistory(userHistory);
+        appUser.setEnabled(false);
+        AppUser updated = save(appUser);
+
+        appUserRepository.softDeleteUserById(updated.getId());
+        log.info("User {} was deleted softly.", username);
     }
 
     private void validateUpdateRequest(UpdateUserRequest request) {

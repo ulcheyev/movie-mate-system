@@ -16,9 +16,9 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   cache:
     type: redis
-    hostname: ${USER_SERVICE_REDIS_HOSTNAME}
-    password: ${USER_SERVICE_REDIS_PASSWORD}
+    host: ${USER_SERVICE_REDIS_HOST}
     port: ${USER_SERVICE_REDIS_PORT}
+    password: ${USER_SERVICE_REDIS_PASSWORD}
     ttl: ${USER_SERVICE_REDIS_TTL}
   application:
     name: user-service

@@ -19,7 +19,6 @@
 # Package Files #
 */targer/
 *.yml
-*.java
 *.txt
 *.jar
 *.war

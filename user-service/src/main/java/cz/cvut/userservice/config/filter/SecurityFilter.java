@@ -1,10 +1,8 @@
-package cz.cvut.userservice.config;
+package cz.cvut.userservice.config.filter;
 
-import cz.cvut.userservice.exception.JwtErrorException;
-import cz.cvut.userservice.exception.UserBannedException;
 import cz.cvut.userservice.service.InternalAppUserService;
 import cz.cvut.userservice.service.TokenService;
-import io.jsonwebtoken.JwtException;
+import cz.cvut.userservice.util.ValidationUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,7 +17,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
 
@@ -32,7 +29,7 @@ public class SecurityFilter extends OncePerRequestFilter {
 
     private final TokenService tokenService;
     private final InternalAppUserService internalAppUserService;
-    private final HandlerExceptionResolver handlerExceptionResolver;
+    private final ValidationUtil validationUtil;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -44,14 +41,8 @@ public class SecurityFilter extends OncePerRequestFilter {
         }
 
         String token = authHeader.substring(BEARER_PREFIX.length());
-        try {
-            processToken(token, request);
-            filterChain.doFilter(request, response);
-        } catch (JwtException e) {
-            handleJwtException(e, request, response);
-        } catch (UserBannedException e) {
-            handleUserBannedException(e, request, response);
-        }
+        processToken(token, request);
+        filterChain.doFilter(request, response);
     }
 
     private void processToken(String token, HttpServletRequest request) {
@@ -59,7 +50,7 @@ public class SecurityFilter extends OncePerRequestFilter {
 
         if (isNotAuthenticated(username)) {
             UserDetails userDetails = internalAppUserService.loadUserByUsername(username);
-            checkAccountLocking(userDetails);
+            validationUtil.checkUserBannedOrDeleted(userDetails);
 
             if (tokenService.validateToken(token, userDetails))
                 setAuthContext(userDetails, request);
@@ -85,32 +76,5 @@ public class SecurityFilter extends OncePerRequestFilter {
 
     private boolean isBearerHeaderPresent(String authHeader) {
         return !StringUtils.isEmpty(authHeader) || StringUtils.startsWith(authHeader, BEARER_PREFIX);
-    }
-
-    private void checkAccountLocking(UserDetails userDetails) {
-        String username = userDetails.getUsername();
-
-        if (!userDetails.isAccountNonLocked()) {
-            log.warn("User {} with banned account tried to access the app.", username);
-            throw new UserBannedException(String.format("Account with username %s is banned.", username));
-        }
-    }
-
-    private void handleJwtException(JwtException e, HttpServletRequest request, HttpServletResponse response) {
-        handlerExceptionResolver.resolveException(
-                request,
-                response,
-                null,
-                new JwtErrorException("Error while processing token: " + e.getMessage())
-        );
-    }
-
-    private void handleUserBannedException(UserBannedException e, HttpServletRequest request, HttpServletResponse response) {
-        handlerExceptionResolver.resolveException(
-                request,
-                response,
-                null,
-                new UserBannedException(e.getMessage())
-        );
     }
 }

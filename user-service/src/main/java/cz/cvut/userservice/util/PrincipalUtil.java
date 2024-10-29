@@ -10,7 +10,7 @@ public class PrincipalUtil {
 
     public String getPrincipalUsername() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && !authentication.isAuthenticated()) {
+        if (authentication != null && authentication.isAuthenticated()) {
             Object principal = authentication.getPrincipal();
             if (principal instanceof UserDetails userDetails)
                 return userDetails.getUsername();

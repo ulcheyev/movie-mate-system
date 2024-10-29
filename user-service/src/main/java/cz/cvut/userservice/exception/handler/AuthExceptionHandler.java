@@ -3,6 +3,7 @@ package cz.cvut.userservice.exception.handler;
 import cz.cvut.userservice.dto.error.ApiErrorSingleResponse;
 import cz.cvut.userservice.exception.JwtErrorException;
 import cz.cvut.userservice.exception.UserBannedException;
+import cz.cvut.userservice.exception.UserDeletedException;
 import cz.cvut.userservice.util.ApiErrorFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.annotation.Order;
@@ -21,17 +22,34 @@ public class AuthExceptionHandler {
     private final ApiErrorFactory apiErrorFactory;
 
     @ExceptionHandler(UserBannedException.class)
-    public ResponseEntity<ApiErrorSingleResponse> handleLockedException(UserBannedException ex, WebRequest request) {
+    public ResponseEntity<ApiErrorSingleResponse> handleBannedException(UserBannedException ex, WebRequest request) {
         HttpStatus status = HttpStatus.LOCKED;
 
         ApiErrorSingleResponse errorResponse = apiErrorFactory.createApiErrorResponse(
                 status,
                 ex.getErrorType(),
-                "Banned user tried to access the app.",
+                "Banned or deleted user tried to access the app.",
                 ex.getMessage(),
                 request,
                 ex.getCause(),
-                new String[]{"Contact support to unlock your account."}
+                new String[]{"Contact support for the further information."}
+        );
+
+        return new ResponseEntity<>(errorResponse, status);
+    }
+
+    @ExceptionHandler(UserDeletedException.class)
+    public ResponseEntity<ApiErrorSingleResponse> handleDeletedException(UserDeletedException ex, WebRequest request) {
+        HttpStatus status = HttpStatus.LOCKED;
+
+        ApiErrorSingleResponse errorResponse = apiErrorFactory.createApiErrorResponse(
+                status,
+                ex.getErrorType(),
+                "Deleted user tried to access the app.",
+                ex.getMessage(),
+                request,
+                ex.getCause(),
+                new String[]{"Contact support for the further information."}
         );
 
         return new ResponseEntity<>(errorResponse, status);
