@@ -17,7 +17,8 @@ spring:
   cache:
     type: redis
     host: ${USER_SERVICE_REDIS_HOST}
-    port: ${USER_SERVICE_REDIS_PORT}
+    port: ${USER_SERVICE_REDIS_PORT:6379}
+    database-idx: ${USER_SERVICE_DATABASE_INDEX:0}
     password: ${USER_SERVICE_REDIS_PASSWORD}
     ttl: ${USER_SERVICE_REDIS_TTL}
   application:

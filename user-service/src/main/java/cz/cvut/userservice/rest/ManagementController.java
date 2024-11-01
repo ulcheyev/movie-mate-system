@@ -1,6 +1,7 @@
 package cz.cvut.userservice.rest;
 
 import cz.cvut.userservice.dto.AppUserDto;
+import cz.cvut.userservice.dto.PageDto;
 import cz.cvut.userservice.dto.SetNewRolesRequest;
 import cz.cvut.userservice.service.ExternalAppUserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,6 +24,39 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "ManagementController", description = "Controller for managing administrative tasks such as role assignment, ban user etc.")
 public class ManagementController {
     private final ExternalAppUserService externalAppUserService;
+
+    @Operation(summary = "Searching users using filters.",
+            description = """
+                    EQUAL(':'),
+                    NEGATION('!'),
+                    CONTAIN('*'),
+                    GREATER_THAN('>'),
+                    LESS_THAN('<'),
+                    LIKE('~'),
+                    details: true/false - provide users' details like activity history etc.
+                    Filter example: ?page=1&size=5&q=username:manki%26updateDate>2024-04-01
+                    WARNING: after filter q=, use "%26" instead of "&"
+                    """
+    )
+    @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = PageDto.class)))
+    @ApiResponse(responseCode = "403", description = "Access Denied. You do not have permission to access this resource.")
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<PageDto<AppUserDto>> searchUsers(
+            @RequestParam(value = "page", defaultValue = "0", required = false) int pageNo,
+            @RequestParam(value = "size", defaultValue = "10", required = false) int pageSize,
+            @RequestParam(value = "sortBy", defaultValue = "username", required = false) String sortBy,
+            @RequestParam(value = "order", defaultValue = "ASC", required = false) Sort.Direction order,
+            @RequestParam(value = "q", required = false) String query,
+            @RequestParam(value = "details", defaultValue = "false", required = false) boolean details
+    ) {
+        log.info("MANAGEMENT: Received request to search users by filters: ?page={}&size={}&sortBy={}&order={}&q={}&details={}.",
+                pageNo, pageSize, sortBy, order, query, details);
+
+        PageDto<AppUserDto> pageDto = externalAppUserService
+                .searchUsers(pageNo, pageSize, sortBy, order, query, details);
+
+        return ResponseEntity.ok(pageDto);
+    }
 
     @Operation(summary = "Get user's profile information by username. Accessible by roles ADMIN, MODERATOR, ROOT.")
     @ApiResponse(responseCode = "200", description = "User's profile information was successfully retrieved.", content = @Content(schema = @Schema(implementation = AppUserDto.class)))

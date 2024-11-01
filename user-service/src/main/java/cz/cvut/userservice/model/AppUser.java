@@ -21,6 +21,13 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@NamedEntityGraph(
+        name = "AppUser.base",
+        attributeNodes = {
+                @NamedAttributeNode("userHistory"),
+                @NamedAttributeNode("roles")
+        }
+)
 public class AppUser implements UserDetails, Serializable {
 
     @Id
@@ -52,11 +59,11 @@ public class AppUser implements UserDetails, Serializable {
     @Column(name = "metadata", length = 500, columnDefinition = "jsonb")
     private String metadata;
 
-    @OneToOne(mappedBy = "appUser", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToOne(mappedBy = "appUser", cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     private UserHistory userHistory;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_user_roles_on_app_user")),

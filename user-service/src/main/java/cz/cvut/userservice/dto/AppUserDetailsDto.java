@@ -2,13 +2,15 @@ package cz.cvut.userservice.dto;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+
+import java.io.Serializable;
 
 @Data
 @SuperBuilder
-@RequiredArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class AppUserDetailsDto extends AppUserDto {
-    private final UserHistoryDto userHistory;
+public class AppUserDetailsDto extends AppUserDto implements Serializable {
+    private UserHistoryDto userHistory;
 }

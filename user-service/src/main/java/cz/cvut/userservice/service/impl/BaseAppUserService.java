@@ -2,9 +2,11 @@ package cz.cvut.userservice.service.impl;
 
 import cz.cvut.userservice.aspect.annotation.OnRootRestriction;
 import cz.cvut.userservice.dto.AppUserDto;
+import cz.cvut.userservice.dto.PageDto;
 import cz.cvut.userservice.dto.SetNewRolesRequest;
 import cz.cvut.userservice.dto.UpdateUserRequest;
 import cz.cvut.userservice.dto.mapper.AppUserMapper;
+import cz.cvut.userservice.dto.mapper.BaseMapper;
 import cz.cvut.userservice.exception.NotFoundException;
 import cz.cvut.userservice.model.AppUser;
 import cz.cvut.userservice.model.Role;
@@ -14,10 +16,17 @@ import cz.cvut.userservice.repository.AppUserRepository;
 import cz.cvut.userservice.repository.UserRoleRepository;
 import cz.cvut.userservice.service.ExternalAppUserService;
 import cz.cvut.userservice.service.InternalAppUserService;
+import cz.cvut.userservice.util.PrincipalUtil;
+import cz.cvut.userservice.util.SpecificationUtil;
 import cz.cvut.userservice.util.ValidationUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -26,6 +35,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -33,10 +44,13 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class BaseAppUserService implements InternalAppUserService, ExternalAppUserService {
     private final AppUserMapper appUserMapper;
+    private final BaseMapper baseMapper;
     private final AppUserRepository appUserRepository;
     private final UserRoleRepository userRoleRepository;
     private final ValidationUtil validationUtil;
+    private final SpecificationUtil specUtil;
     private final ObjectProvider<PasswordEncoder> passwordEncoderProvider;
+    private final PrincipalUtil principalUtil;
 
     @Override
     public AppUser findUserByUsername(String username) {
@@ -62,6 +76,7 @@ public class BaseAppUserService implements InternalAppUserService, ExternalAppUs
     }
 
     @Override
+    @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
        final AppUser appUser = findUserByUsername(username);
        return User.builder()
@@ -71,6 +86,35 @@ public class BaseAppUserService implements InternalAppUserService, ExternalAppUs
                .accountLocked(!appUser.getNotBanned())
                .disabled(!appUser.getEnabled())
                .build();
+    }
+
+    @Override
+    @Transactional
+    public PageDto<AppUserDto> searchUsers(int pageNo, int pageSize, String sortBy, Sort.Direction order, String query, boolean details) {
+        List<Role> excludedRoles = getExcludedRoles();
+
+        Specification<AppUser> spec = specUtil.<AppUser>buildSpecification(query)
+                .and(appUserRepository.usersWithoutRoles(excludedRoles));
+        Sort sort = Sort.by(order, sortBy);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+
+        Page<AppUser> page = appUserRepository.findAll(spec, pageable);
+        List<AppUserDto> elements = page.getContent().stream()
+                .map(appUser -> hasDetails(appUser, details))
+                .toList();
+        return baseMapper.convertToPageDto(elements, pageNo, pageSize, page);
+    }
+
+    private List<Role> getExcludedRoles() {
+        List<Role> excludedRoles = new ArrayList<>(List.of(Role.ROOT));
+        List<String> currentUserRoles = principalUtil.getCurrentUserRoles();
+
+        boolean isNotAdmin = !(currentUserRoles.contains(Role.ADMIN.name()) || currentUserRoles.contains(Role.ROOT.name()));
+        boolean isModerator = currentUserRoles.contains(Role.MODERATOR.name());
+        if (isModerator && isNotAdmin)
+            excludedRoles.add(Role.ADMIN);
+
+        return excludedRoles;
     }
 
     @Override

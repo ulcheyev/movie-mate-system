@@ -18,6 +18,7 @@
 
 # Package Files #
 */targer/
+*/target/generated-sources
 *.yml
 *.txt
 *.jar

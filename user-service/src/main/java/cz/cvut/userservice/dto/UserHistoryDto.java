@@ -1,5 +1,6 @@
 package cz.cvut.userservice.dto;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 public record UserHistoryDto(
@@ -7,4 +8,4 @@ public record UserHistoryDto(
         LocalDateTime updatedAt,
         LocalDateTime deletedAt,
         LocalDateTime bannedAt
-) {}
+) implements Serializable {}
