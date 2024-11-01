@@ -22,6 +22,10 @@ import cz.cvut.userservice.util.ValidationUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -119,6 +123,7 @@ public class BaseAppUserService implements InternalAppUserService, ExternalAppUs
 
     @Override
     @Transactional
+    @Cacheable(value = "user", key = "#username + ':' + #details")
     @OnRootRestriction
     public AppUserDto getUserByUsername(String username, boolean details) {
         AppUser appUser = findUserByUsername(username);
@@ -136,6 +141,10 @@ public class BaseAppUserService implements InternalAppUserService, ExternalAppUs
 
     @Override
     @Transactional
+    @Caching(
+            put = {@CachePut(value = "user", key = "#username + ':' + false")},
+            evict = {@CacheEvict(value = "user", key = "#username + ':' + true")}
+    )
     public AppUserDto updateUser(String username, UpdateUserRequest request) {
         AppUser appUser = findUserByUsername(username);
 
@@ -158,6 +167,10 @@ public class BaseAppUserService implements InternalAppUserService, ExternalAppUs
 
     @Override
     @Transactional
+    @Caching(
+            put = {@CachePut(value = "user", key = "#username + ':' + false")},
+            evict = {@CacheEvict(value = "user", key = "#username + ':' + true")}
+    )
     @OnRootRestriction
     public AppUserDto banUserByUsername(String username) {
         AppUser updated = banOrUnbanUser(username, true);
@@ -166,6 +179,10 @@ public class BaseAppUserService implements InternalAppUserService, ExternalAppUs
 
     @Override
     @Transactional
+    @Caching(
+            put = {@CachePut(value = "user", key = "#username + ':' + false")},
+            evict = {@CacheEvict(value = "user", key = "#username + ':' + true")}
+    )
     @OnRootRestriction
     public AppUserDto unbanUserByUsername(String username) {
         AppUser updated = banOrUnbanUser(username, false);
@@ -174,6 +191,10 @@ public class BaseAppUserService implements InternalAppUserService, ExternalAppUs
 
     @Override
     @Transactional
+    @Caching(
+            put = {@CachePut(value = "user", key = "#username + ':' + false")},
+            evict = {@CacheEvict(value = "user", key = "#username + ':' + true")}
+    )
     @OnRootRestriction
     public AppUserDto setNewRoles(String username, SetNewRolesRequest request) {
         AppUser appUser = findUserByUsername(username);
@@ -208,6 +229,12 @@ public class BaseAppUserService implements InternalAppUserService, ExternalAppUs
 
     @Override
     @Transactional
+    @Caching(
+            evict = {
+                    @CacheEvict(cacheNames = "user", key = "#username + ':' + false"),
+                    @CacheEvict(cacheNames = "user", key = "#username + ':' + true")
+            }
+    )
     @OnRootRestriction
     public void deleteUserByUsername(String username) {
         AppUser appUser = findUserByUsername(username);
