@@ -15,8 +15,6 @@
 
 	<properties>
 		<jwt.version>0.12.3</jwt.version>
-		<spring-doc.version>2.6.0</spring-doc.version>
-		<mapstruct.version>1.5.5.Final</mapstruct.version>
 	</properties>
 
 	<dependencies>
@@ -101,14 +99,12 @@
 		<dependency>
 			<groupId>org.mapstruct</groupId>
 			<artifactId>mapstruct</artifactId>
-			<version>${mapstruct.version}</version>
 		</dependency>
 
 		<!--DOCS-->
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-			<version>${spring-doc.version}</version>
 		</dependency>
 
 		<!-- LOMBOK -->
@@ -116,6 +112,11 @@
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
+		</dependency>
+
+		<dependency>
+			<groupId>cz.cvut</groupId>
+			<artifactId>common-libraries</artifactId>
 		</dependency>
 	</dependencies>
 

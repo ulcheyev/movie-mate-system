@@ -15,10 +15,13 @@
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>17</java.version>
+
         <spring.doc.version>2.2.0</spring.doc.version>
         <spring.boot.version>3.3.1</spring.boot.version>
         <spring.cloud.version>2023.0.1</spring.cloud.version>
         <lombok.version>1.18.24</lombok.version>
+        <mapstruct.version>1.5.5.Final</mapstruct.version>
+        <spring-doc.version>2.6.0</spring-doc.version>
     </properties>
 
     <groupId>cz.cvut</groupId>
@@ -53,6 +56,21 @@
                 <version>${spring.cloud.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct</artifactId>
+                <version>${mapstruct.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+                <version>${spring-doc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cz.cvut</groupId>
+                <artifactId>common-libraries</artifactId>
+                <version>${movie-mate.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
