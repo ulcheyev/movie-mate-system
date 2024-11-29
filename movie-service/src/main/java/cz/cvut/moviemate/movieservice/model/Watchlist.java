@@ -31,7 +31,7 @@ public class Watchlist {
     private List<String> movies;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    @Field(name = "date_created")
+    @Field(name = "created_date")
     @Builder.Default
-    private LocalDateTime dateCreated = LocalDateTime.now();
+    private LocalDateTime createdDate = LocalDateTime.now();
 }

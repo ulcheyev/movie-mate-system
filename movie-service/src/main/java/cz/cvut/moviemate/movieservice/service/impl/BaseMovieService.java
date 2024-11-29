@@ -3,20 +3,15 @@ package cz.cvut.moviemate.movieservice.service.impl;
 import cz.cvut.moviemate.commonlib.exception.DuplicateException;
 import cz.cvut.moviemate.commonlib.exception.NotFoundException;
 import cz.cvut.moviemate.movieservice.dto.GenreResponse;
+import cz.cvut.moviemate.movieservice.dto.MessageResponse;
 import cz.cvut.moviemate.movieservice.dto.mapper.GenreMapper;
 import cz.cvut.moviemate.movieservice.dto.prop.GenreDto;
 import cz.cvut.moviemate.movieservice.model.Genre;
-import cz.cvut.moviemate.movieservice.model.Movie;
 import cz.cvut.moviemate.movieservice.repository.GenreRepository;
 import cz.cvut.moviemate.movieservice.repository.MovieRepository;
 import cz.cvut.moviemate.movieservice.service.MovieService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.bson.types.ObjectId;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,11 +21,10 @@ import java.util.List;
 @Slf4j(topic = "BASE_MOVIE_SERVICE")
 @RequiredArgsConstructor
 public class BaseMovieService implements MovieService {
-    private final GenreMapper genreMapper;
 
+    private final GenreMapper genreMapper;
     private final MovieRepository movieRepository;
     private final GenreRepository genreRepository;
-    private final MongoTemplate mongoTemplate;
 
     private Genre getGenre(String id) {
         return genreRepository.findById(id)
@@ -43,7 +37,24 @@ public class BaseMovieService implements MovieService {
 
     @Override
     public List<GenreResponse> bulkSaveGenres(List<GenreDto> genres) {
-        return List.of();
+        if (genres == null || genres.isEmpty())
+            throw new IllegalArgumentException("The genre list cannot be null or empty.");
+
+        List<Genre> genresToSave = genres.stream()
+                .filter(genreDto -> {
+                    if (!isGenreExists(genreDto.name()))
+                        return true;
+
+                    log.warn("Genre with name '{}' already exists. Skipping...", genreDto.name());
+                    return true;
+                })
+                .map(genreDto -> Genre.builder().name(genreDto.name()).build())
+                .toList();
+
+        List<Genre> savedGenres = genreRepository.saveAll(genresToSave);
+        return savedGenres.stream()
+                .map(genreMapper::toDto)
+                .toList();
     }
 
     @Override
@@ -70,19 +81,24 @@ public class BaseMovieService implements MovieService {
 
     @Override
     public GenreResponse updateGenre(String id, GenreDto genre) {
-        return null;
+        if (isGenreExists(genre.name()))
+            throw new DuplicateException(String.format("Genre '%s' already exists", genre.name()));
+
+        Genre g = getGenre(id);
+        genreMapper.updateGenreFromDto(genre, g);
+
+        return genreMapper.toDto(genreRepository.save(g));
     }
 
     @Override
     @Transactional
-    public void deleteGenre(String id) {
+    public MessageResponse deleteGenre(String id) {
         Genre genre = getGenre(id);
-        if (genre == null) return;
+        if (genre == null)
+            return new MessageResponse("Genre with id '" + id + "' not found");
 
         genreRepository.delete(genre);
-
-        Query query = new Query(Criteria.where("genre._id").is(new ObjectId(id)));
-        Update update = new Update().pull("genres", Query.query(Criteria.where("_id").is(new ObjectId(id))));
-        mongoTemplate.updateMulti(query, update, Movie.class);
+        movieRepository.removeGenreFromMovieGenres(id);
+        return new MessageResponse("Genre with id '" + id + "' has been deleted");
     }
 }

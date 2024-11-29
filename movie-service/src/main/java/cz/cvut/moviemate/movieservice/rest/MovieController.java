@@ -1,8 +1,10 @@
 package cz.cvut.moviemate.movieservice.rest;
 
 import cz.cvut.moviemate.movieservice.dto.GenreResponse;
+import cz.cvut.moviemate.movieservice.dto.MessageResponse;
 import cz.cvut.moviemate.movieservice.dto.prop.GenreDto;
 import cz.cvut.moviemate.movieservice.service.MovieService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -20,10 +22,17 @@ public class MovieController {
     private final MovieService movieService;
 
     @PostMapping(value = "/genre", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<GenreResponse> saveGenre(@RequestBody GenreDto genreDto) {
+    public ResponseEntity<GenreResponse> saveGenre(@RequestBody @Valid GenreDto genreDto) {
         log.info("Saving genre: {}", genreDto);
         GenreResponse response = movieService.saveGenre(genreDto);
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping(value = "/genre/bulk", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<GenreResponse>> saveAllGenres(@RequestBody @Valid List<GenreDto> genres) {
+        log.info("Saving all genre: {}", genres);
+        List<GenreResponse> savedGenres = movieService.bulkSaveGenres(genres);
+        return ResponseEntity.ok(savedGenres);
     }
 
     @GetMapping(value = "/genre", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -33,10 +42,17 @@ public class MovieController {
         return ResponseEntity.ok(response);
     }
 
+    @PutMapping(value = "/genre/{id}")
+    public ResponseEntity<GenreResponse> updateGenre(@PathVariable String id, @RequestBody @Valid GenreDto genreDto) {
+        log.info("Updating genre: {}", genreDto);
+        GenreResponse response = movieService.updateGenre(id, genreDto);
+        return ResponseEntity.ok(response);
+    }
+
     @DeleteMapping(value = "/genre/{id}")
-    public ResponseEntity<String> deleteGenre(@PathVariable String id) {
+    public ResponseEntity<MessageResponse> deleteGenre(@PathVariable String id) {
         log.info("Deleting genre: {}", id);
-        movieService.deleteGenre(id);
-        return ResponseEntity.ok(String.format("Deleted genre: %s", id));
+        MessageResponse response = movieService.deleteGenre(id);
+        return ResponseEntity.ok(response);
     }
 }

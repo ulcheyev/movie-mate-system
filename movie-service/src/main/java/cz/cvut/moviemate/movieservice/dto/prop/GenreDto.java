@@ -1,7 +1,9 @@
 package cz.cvut.moviemate.movieservice.dto.prop;
 
+import jakarta.validation.constraints.NotBlank;
+
 import java.io.Serializable;
 
 public record GenreDto(
-        String name
+        @NotBlank String name
 ) implements Serializable {}

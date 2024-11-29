@@ -1,6 +1,7 @@
 package cz.cvut.moviemate.movieservice.service;
 
 import cz.cvut.moviemate.movieservice.dto.GenreResponse;
+import cz.cvut.moviemate.movieservice.dto.MessageResponse;
 import cz.cvut.moviemate.movieservice.dto.prop.GenreDto;
 
 import java.util.List;
@@ -15,5 +16,5 @@ public interface MovieService {
 
     GenreResponse updateGenre(String id, GenreDto genre);
 
-    void deleteGenre(String id);
+    MessageResponse deleteGenre(String id);
 }
