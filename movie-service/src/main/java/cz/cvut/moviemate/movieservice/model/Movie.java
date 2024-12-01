@@ -6,7 +6,6 @@ import cz.cvut.moviemate.movieservice.model.prop.Rating;
 import cz.cvut.moviemate.movieservice.model.prop.Review;
 import lombok.*;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -27,7 +26,6 @@ public class Movie {
     private String id;
 
     @Field(name = "title")
-    @Indexed
     private String title;
 
     @Field(name = "genres")

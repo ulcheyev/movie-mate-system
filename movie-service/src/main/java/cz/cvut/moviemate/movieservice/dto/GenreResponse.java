@@ -1,8 +1,17 @@
 package cz.cvut.moviemate.movieservice.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 
-public record GenreResponse(
-        String id,
-        String name
-) implements Serializable {}
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class GenreResponse implements Serializable {
+    private String id;
+    private String name;
+}
