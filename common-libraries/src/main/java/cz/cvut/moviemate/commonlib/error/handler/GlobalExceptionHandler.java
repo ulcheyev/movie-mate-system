@@ -18,7 +18,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MovieMateBaseException.class)
     @ResponseBody
-    public ResponseEntity<ApiErrorSingleResponse> handleBeatBuddyBaseException(MovieMateBaseException ex, WebRequest request) {
+    public ResponseEntity<ApiErrorSingleResponse> handleMovieMateBaseException(MovieMateBaseException ex, WebRequest request) {
         ApiErrorSingleResponse errorResponse = ApiErrorFactory.createApiErrorResponse(
                 HttpStatus.I_AM_A_TEAPOT,
                 "GENERIC_ERROR",
