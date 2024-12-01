@@ -1,18 +1,18 @@
-package cz.cvut.moviemate.userservice.dto.error;
+package cz.cvut.moviemate.commonlib.error;
 
 import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @Data
 @Builder
-public class ApiErrorSingleResponse {
+public class ApiErrorMultipleResponses {
     private final Integer errorCode;
     private final String errorName;
-    private final String message;
-    private final String userMessage;
     private final LocalDateTime timestamp;
+    private final Map<String, String> errorsMessages;
     private final String path;
     private final String method;
     private final String causedBy;
