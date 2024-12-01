@@ -1,25 +1,17 @@
-package cz.cvut.moviemate.userservice.util;
+package cz.cvut.moviemate.commonlib.utils;
 
-import cz.cvut.moviemate.userservice.dto.error.ApiErrorMultipleResponses;
-import cz.cvut.moviemate.userservice.dto.error.ApiErrorSingleResponse;
+
+import cz.cvut.moviemate.commonlib.error.ApiErrorMultipleResponses;
+import cz.cvut.moviemate.commonlib.error.ApiErrorSingleResponse;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 
 import java.time.LocalDateTime;
 import java.util.Map;
 
-@Component
 public class ApiErrorFactory {
-
-    public static String getErrorCause(Throwable cause) {
-        String causeClass = cause != null ? cause.getClass().getSimpleName() : "N/A";
-        String causeMessage = cause != null ? cause.getMessage() : "null message from cause.";
-        return causeClass.concat(", message: ").concat(causeMessage);
-    }
-
-    public ApiErrorMultipleResponses createApiErrorResponses(
+    public static ApiErrorMultipleResponses createApiErrorResponses(
             HttpStatus status,
             String errorName,
             Map<String, String> errors,
@@ -38,7 +30,7 @@ public class ApiErrorFactory {
                 .build();
     }
 
-    public ApiErrorSingleResponse createApiErrorResponse(
+    public static ApiErrorSingleResponse createApiErrorResponse(
             HttpStatus status,
             String errorName,
             String message,
@@ -58,5 +50,11 @@ public class ApiErrorFactory {
                 .suggestions(suggestions)
                 .message(message)
                 .build();
+    }
+
+    private static String getErrorCause(Throwable cause) {
+        String causeClass = cause != null ? cause.getClass().getSimpleName() : "N/A";
+        String causeMessage = cause != null ? cause.getMessage() : "null message from cause.";
+        return causeClass.concat(", message: ").concat(causeMessage);
     }
 }
