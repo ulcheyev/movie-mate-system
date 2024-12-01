@@ -1,6 +1,6 @@
 # USER SERVICE
 
-1. Before running the service, create and .env file and add the following values:
+User service environment variables:
 ```
 MOVIE_MATE_USER_SERVICE_PORT= # optional (default 7030)
 MOVIE_MATE_USER_SERVICE_CONTEXT_PATH= # optional (default /api/v1)
