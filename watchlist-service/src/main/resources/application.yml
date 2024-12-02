@@ -1,11 +1,41 @@
 server:
   port: ${MOVIE_MATE_WATCHLIST_SERVICE_PORT:7020}
+  servlet:
+    context-path: ${MOVIE_MATE_WATCHLIST_SERVICE_CONTEXT_PATH:/api/v1}
 
 spring:
+
   application:
+
     name: watchlist-service
+
+    data:
+
+      mongodb:
+        host: ${MOVIE_MATE_MONGO_HOST}
+        port: ${MOVIE_MATE_MONGO_PORT}
+        database: ${MOVIE_MATE_WATCHLIST_SERVICE_MONGO_DB_NAME}
+        username: ${MOVIE_MATE_MONGO_USERNAME:}
+        password: ${MOVIE_MATE_MONGO_PASSWORD:}
+
+      redis:
+        host: ${MOVIE_MATE_REDIS_HOST}
+        port: ${MOVIE_MATE_REDIS_PORT}
+        password: ${MOVIE_MATE_REDIS_PASSWORD:}
+        database-idx: ${MOVIE_MATE_WATCHLIST_SERVICE_DATABASE_INDEX:0}
+        ttl: ${MOVIE_MATE_WATCHLIST_SERVICE_CACHE_TTL_IN_HOURS:-1}
+
+
 
 logging:
   level:
     org:
       springframework: INFO
+
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${MOVIE_MATE_DISCOVERY_SERVER_URL}
+    registerWithEureka: true
+    fetchRegistry: true

@@ -1,5 +1,6 @@
 package cz.cvut.moviemate.userservice.service.impl;
 
+import cz.cvut.moviemate.commonlib.dto.AppUserClaimsDetails;
 import cz.cvut.moviemate.userservice.dto.*;
 import cz.cvut.moviemate.userservice.dto.mapper.AppUserMapper;
 import cz.cvut.moviemate.userservice.exception.JwtErrorException;
@@ -18,6 +19,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @Slf4j(topic = "BASE_AUTH_SERVICE")
@@ -103,5 +106,23 @@ public class BaseAuthService implements AuthService {
     private void validateRegisterRequest(RegisterRequest registerRequest) {
        validationUtil.checkDuplicate(registerRequest.username().toLowerCase(), internalAppUserService::findUserByUsername, "username");
        validationUtil.checkDuplicate(registerRequest.email(), internalAppUserService::findUserByEmail, "email");
+    }
+
+
+    @Override
+    public AppUserClaimsDetails validateToken(String token) {
+        try {
+            String username = tokenService.extractUsername(token);
+            AppUser appUser = internalAppUserService.findUserByUsername(username);
+            List<String> roleNames = appUserMapper.rolesToString(appUser);
+            return new AppUserClaimsDetails(
+                    appUser.getUsername(),
+                    appUser.getEmail(),
+                    roleNames
+            );
+        } catch (io.jsonwebtoken.JwtException ex) {
+            log.error("Access token is invalid: {}", ex.getMessage());
+            throw new JwtException("Access token is invalid");
+        }
     }
 }

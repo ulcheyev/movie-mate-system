@@ -5,22 +5,26 @@ server:
 
 spring:
   datasource:
-    url: ${MOVIE_MATE_USER_SERVICE_DATASOURCE_URL}
-    username: ${MOVIE_MATE_USER_SERVICE_DATASOURCE_USERNAME}
-    password: ${MOVIE_MATE_USER_SERVICE_DATASOURCE_PASSWORD}
+    url: ${MOVIE_MATE_POSTGRE_URL}
+    username: ${MOVIE_MATE_POSTGRE_USERNAME}
+    password: ${MOVIE_MATE_POSTGRE_PASSWORD}
   jpa:
     properties:
       hibernate:
-#        show_sql: true
+        hbm2ddl:
+          auto: update
+      #        show_sql: true
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+
   cache:
     type: redis
-    host: ${MOVIE_MATE_USER_SERVICE_REDIS_HOST}
-    port: ${MOVIE_MATE_USER_SERVICE_REDIS_PORT:6379}
+    host: ${MOVIE_MATE_REDIS_HOST}
+    port: ${MOVIE_MATE_REDIS_PORT:6379}
     database-idx: ${MOVIE_MATE_USER_SERVICE_DATABASE_INDEX:0}
-    password: ${MOVIE_MATE_USER_SERVICE_REDIS_PASSWORD}
-    ttl: ${MOVIE_MATE_USER_SERVICE_REDIS_TTL}
+    password: ${MOVIE_MATE_REDIS_PASSWORD}
+    ttl: ${MOVIE_MATE_USER_SERVICE_REDIS_TTL:-1}
   application:
     name: user-service
 
@@ -44,3 +48,10 @@ springdoc:
     path: /docs
   swagger-ui:
     path: /docs/swagger-ui.html
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${MOVIE_MATE_DISCOVERY_SERVER_URL}
+    registerWithEureka: true
+    fetchRegistry: true

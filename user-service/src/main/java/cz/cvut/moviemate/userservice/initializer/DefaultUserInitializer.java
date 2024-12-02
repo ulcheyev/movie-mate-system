@@ -54,8 +54,15 @@ public class DefaultUserInitializer {
 
     private UserRole[] initializeRootRole() {
         UserRole[] roles = new UserRole[Role.values().length];
-        for (int i = 0; i < roles.length; i++)
-            roles[i] = internalAppUserService.findUserRoleByRole(Role.values()[i]);
+        for (int i = 0; i < roles.length; i++){
+            try {
+                roles[i] = internalAppUserService.findUserRoleByRole(Role.values()[i]);
+            } catch (NotFoundException ex) { // first start -- roles are null
+                roles[i] = internalAppUserService.saveRole(UserRole.builder()
+                        .role(Role.values()[i])
+                        .build());
+            }
+        }
 
         return roles;
     }

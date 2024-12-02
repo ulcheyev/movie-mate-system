@@ -1,9 +1,9 @@
 package cz.cvut.moviemate.userservice.exception.handler;
 
+import cz.cvut.moviemate.commonlib.error.ApiErrorSingleResponse;
 import cz.cvut.moviemate.commonlib.exception.MovieMateBaseException;
-import cz.cvut.moviemate.userservice.dto.error.ApiErrorSingleResponse;
+import cz.cvut.moviemate.commonlib.utils.ApiErrorFactory;
 import cz.cvut.moviemate.userservice.exception.RestrictException;
-import cz.cvut.moviemate.userservice.util.ApiErrorFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -18,14 +18,13 @@ import org.springframework.web.context.request.WebRequest;
 @RequiredArgsConstructor
 @Order
 public class GlobalExceptionHandler {
-    private final ApiErrorFactory apiErrorFactory;
 
     @ExceptionHandler(Exception.class)
     @ResponseBody
     public ResponseEntity<ApiErrorSingleResponse> handleGenericException(Exception ex, WebRequest request) {
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
 
-        ApiErrorSingleResponse errorResponse = apiErrorFactory.createApiErrorResponse(
+        ApiErrorSingleResponse errorResponse = ApiErrorFactory.createApiErrorResponse(
                 status,
                 "INTERNAL_SERVER_ERROR",
                 String.format("Internal error: %s", ex.getMessage()),
@@ -43,7 +42,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiErrorSingleResponse> handleAppException(MovieMateBaseException ex, WebRequest request) {
         HttpStatus status = HttpStatus.I_AM_A_TEAPOT;
 
-        ApiErrorSingleResponse errorResponse = apiErrorFactory.createApiErrorResponse(
+        ApiErrorSingleResponse errorResponse = ApiErrorFactory.createApiErrorResponse(
                 status,
                 ex.getErrorType(),
                 String.format("Generic internal error: %s", ex.getMessage()),
@@ -61,7 +60,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiErrorSingleResponse> handleRestrictException(RestrictException ex, WebRequest request) {
         HttpStatus status = HttpStatus.FORBIDDEN;
 
-        ApiErrorSingleResponse errorResponse = apiErrorFactory.createApiErrorResponse(
+        ApiErrorSingleResponse errorResponse = ApiErrorFactory.createApiErrorResponse(
                 status,
                 ex.getErrorType(),
                 ex.getMessage(),
@@ -79,7 +78,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiErrorSingleResponse> handleAccessDenied(AccessDeniedException ex, WebRequest request) {
         HttpStatus status = HttpStatus.FORBIDDEN;
 
-        ApiErrorSingleResponse errorResponse = apiErrorFactory.createApiErrorResponse(
+        ApiErrorSingleResponse errorResponse = ApiErrorFactory.createApiErrorResponse(
                 status,
                 "ACCESS_DENIED",
                 ex.getMessage(),

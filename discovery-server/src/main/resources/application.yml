@@ -9,3 +9,11 @@ logging:
   level:
     org:
       springframework: INFO
+
+eureka:
+  client:
+    registerWithEureka: false
+    fetchRegistry: false
+  server:
+    enable-self-preservation: true
+    evictionIntervalTimerInMs: 60000

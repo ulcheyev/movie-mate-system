@@ -1,8 +1,8 @@
 package cz.cvut.moviemate.userservice.rest;
 
+import cz.cvut.moviemate.commonlib.error.ApiErrorSingleResponse;
 import cz.cvut.moviemate.userservice.dto.AppUserDto;
 import cz.cvut.moviemate.userservice.dto.UpdateUserRequest;
-import cz.cvut.moviemate.userservice.dto.error.ApiErrorSingleResponse;
 import cz.cvut.moviemate.userservice.service.ExternalAppUserService;
 import cz.cvut.moviemate.userservice.util.PrincipalUtil;
 import io.swagger.v3.oas.annotations.Operation;
