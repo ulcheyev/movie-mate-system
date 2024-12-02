@@ -80,6 +80,12 @@ public class BaseAppUserService implements InternalAppUserService, ExternalAppUs
     }
 
     @Override
+    public UserRole saveRole(UserRole role) {
+        return userRoleRepository.save(role);
+    }
+
+
+    @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
        final AppUser appUser = findUserByUsername(username);

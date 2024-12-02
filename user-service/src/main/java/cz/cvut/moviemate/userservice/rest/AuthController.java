@@ -1,13 +1,15 @@
 package cz.cvut.moviemate.userservice.rest;
 
+import cz.cvut.moviemate.commonlib.dto.AppUserClaimsDetails;
+import cz.cvut.moviemate.commonlib.error.ApiErrorMultipleResponses;
+import cz.cvut.moviemate.commonlib.error.ApiErrorSingleResponse;
 import cz.cvut.moviemate.userservice.dto.AuthorizationResponse;
 import cz.cvut.moviemate.userservice.dto.LoginRequest;
 import cz.cvut.moviemate.userservice.dto.RegisterRequest;
 import cz.cvut.moviemate.userservice.dto.TokenPairDto;
-import cz.cvut.moviemate.userservice.dto.error.ApiErrorMultipleResponses;
-import cz.cvut.moviemate.userservice.dto.error.ApiErrorSingleResponse;
 import cz.cvut.moviemate.userservice.exception.JwtErrorException;
 import cz.cvut.moviemate.userservice.service.AuthService;
+import io.jsonwebtoken.JwtException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -67,5 +69,32 @@ public class AuthController {
         TokenPairDto tokenPair = authService.refreshToken(refreshToken);
 
         return ResponseEntity.ok(tokenPair);
+    }
+
+
+    @Operation(summary = "Validate token")
+    @ApiResponse(responseCode = "200", description = "Access token is valid.", content = @Content(schema = @Schema(implementation = AppUserClaimsDetails.class)))
+    @ApiResponse(responseCode = "403", description = "Error occurred while validating token.", content = @Content(schema = @Schema(implementation = ApiErrorSingleResponse.class)))
+    @ApiResponse(responseCode = "400", description = "Invalid access token and refresh token is not specified.")
+    @PostMapping(value = "/validate-token", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<AppUserClaimsDetails> validateToken(@RequestHeader("Authorization") String authHeader,
+                                                              @RequestParam(required = false) String refreshToken) {
+        log.info("Request received to validate access token.");
+
+        String token = authHeader.replace("Bearer ", "");
+        AppUserClaimsDetails details;
+        try {
+            details = authService.validateToken(token);
+        } catch (JwtException ex) {
+            // Token is invalid or expired, try to refresh
+            if (refreshToken != null) {
+                TokenPairDto newToken = authService.refreshToken(refreshToken);
+                details = authService.validateToken(newToken.accessToken());
+            } else {
+                return ResponseEntity.badRequest().build();
+            }
+        }
+        // Token is valid, return 200 OK with token details
+        return ResponseEntity.ok(details);
     }
 }

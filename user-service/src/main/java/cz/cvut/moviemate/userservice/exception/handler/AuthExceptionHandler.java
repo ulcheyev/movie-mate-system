@@ -1,10 +1,10 @@
 package cz.cvut.moviemate.userservice.exception.handler;
 
-import cz.cvut.moviemate.userservice.dto.error.ApiErrorSingleResponse;
+import cz.cvut.moviemate.commonlib.error.ApiErrorSingleResponse;
+import cz.cvut.moviemate.commonlib.utils.ApiErrorFactory;
 import cz.cvut.moviemate.userservice.exception.JwtErrorException;
 import cz.cvut.moviemate.userservice.exception.UserBannedException;
 import cz.cvut.moviemate.userservice.exception.UserDeletedException;
-import cz.cvut.moviemate.userservice.util.ApiErrorFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -19,13 +19,12 @@ import org.springframework.web.context.request.WebRequest;
 @RequiredArgsConstructor
 @Order(1)
 public class AuthExceptionHandler {
-    private final ApiErrorFactory apiErrorFactory;
 
     @ExceptionHandler(UserBannedException.class)
     public ResponseEntity<ApiErrorSingleResponse> handleBannedException(UserBannedException ex, WebRequest request) {
         HttpStatus status = HttpStatus.LOCKED;
 
-        ApiErrorSingleResponse errorResponse = apiErrorFactory.createApiErrorResponse(
+        ApiErrorSingleResponse errorResponse = ApiErrorFactory.createApiErrorResponse(
                 status,
                 ex.getErrorType(),
                 "Banned or deleted user tried to access the app.",
@@ -42,7 +41,7 @@ public class AuthExceptionHandler {
     public ResponseEntity<ApiErrorSingleResponse> handleDeletedException(UserDeletedException ex, WebRequest request) {
         HttpStatus status = HttpStatus.LOCKED;
 
-        ApiErrorSingleResponse errorResponse = apiErrorFactory.createApiErrorResponse(
+        ApiErrorSingleResponse errorResponse = ApiErrorFactory.createApiErrorResponse(
                 status,
                 ex.getErrorType(),
                 "Deleted user tried to access the app.",
@@ -60,7 +59,7 @@ public class AuthExceptionHandler {
     public ResponseEntity<ApiErrorSingleResponse> handleUnauthorizedException(JwtErrorException ex, WebRequest request) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
 
-        ApiErrorSingleResponse errorResponse = apiErrorFactory.createApiErrorResponse(
+        ApiErrorSingleResponse errorResponse = ApiErrorFactory.createApiErrorResponse(
                 status,
                 ex.getErrorType(),
                 ex.getMessage(),
@@ -77,7 +76,7 @@ public class AuthExceptionHandler {
     public ResponseEntity<ApiErrorSingleResponse> handleBadCredentials(Exception ex, WebRequest request) {
         HttpStatus status = HttpStatus.UNAUTHORIZED;
 
-        ApiErrorSingleResponse errorResponse = apiErrorFactory.createApiErrorResponse(
+        ApiErrorSingleResponse errorResponse = ApiErrorFactory.createApiErrorResponse(
                 status,
                 "BAD_CREDENTIALS",
                 "Provided incorrect credentials.",

@@ -1,11 +1,11 @@
 package cz.cvut.moviemate.userservice.exception.handler;
 
+import cz.cvut.moviemate.commonlib.error.ApiErrorMultipleResponses;
+import cz.cvut.moviemate.commonlib.error.ApiErrorSingleResponse;
 import cz.cvut.moviemate.commonlib.exception.DuplicateException;
 import cz.cvut.moviemate.commonlib.exception.InvalidTimestampException;
 import cz.cvut.moviemate.commonlib.exception.NotFoundException;
-import cz.cvut.moviemate.userservice.dto.error.ApiErrorMultipleResponses;
-import cz.cvut.moviemate.userservice.dto.error.ApiErrorSingleResponse;
-import cz.cvut.moviemate.userservice.util.ApiErrorFactory;
+import cz.cvut.moviemate.commonlib.utils.ApiErrorFactory;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.core.annotation.Order;
@@ -27,14 +27,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 @RequiredArgsConstructor
 @Order(1)
 public class ValidationExceptionHandler {
-    private final ApiErrorFactory apiErrorFactory;
 
     @ExceptionHandler(BadRequestException.class)
     @ResponseBody
     public ResponseEntity<ApiErrorSingleResponse> handleBadRequestException(BadRequestException ex, WebRequest request) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
 
-        ApiErrorSingleResponse response = apiErrorFactory.createApiErrorResponse(
+        ApiErrorSingleResponse response = ApiErrorFactory.createApiErrorResponse(
                 status,
                 "BAD_REQUEST",
                 ex.getMessage(),
@@ -57,7 +56,7 @@ public class ValidationExceptionHandler {
             errors.put(fieldError.getField(), fieldError.getDefaultMessage());
         });
 
-        ApiErrorMultipleResponses errorResponse = apiErrorFactory.createApiErrorResponses(
+        ApiErrorMultipleResponses errorResponse = ApiErrorFactory.createApiErrorResponses(
                 status,
                 "ARGUMENT_FORMAT_ERROR",
                 errors,
@@ -80,7 +79,7 @@ public class ValidationExceptionHandler {
             errors.put(fieldName, error.getDefaultMessage());
         });
 
-        ApiErrorMultipleResponses errorResponse = apiErrorFactory.createApiErrorResponses(
+        ApiErrorMultipleResponses errorResponse = ApiErrorFactory.createApiErrorResponses(
                 status,
                 "METHOD_VALIDATION_ERROR",
                 errors,
@@ -97,7 +96,7 @@ public class ValidationExceptionHandler {
     public ResponseEntity<ApiErrorSingleResponse> handleDuplicateException(DuplicateException ex, WebRequest request) {
         HttpStatus status = HttpStatus.CONFLICT;
 
-        ApiErrorSingleResponse errorResponse = apiErrorFactory.createApiErrorResponse(
+        ApiErrorSingleResponse errorResponse = ApiErrorFactory.createApiErrorResponse(
                 status,
                 ex.getErrorType(),
                 ex.getMessage(),
@@ -115,7 +114,7 @@ public class ValidationExceptionHandler {
     public ResponseEntity<ApiErrorSingleResponse> handleNotFoundException(NotFoundException ex, WebRequest request) {
         HttpStatus status = HttpStatus.NOT_FOUND;
 
-        ApiErrorSingleResponse errorResponse = apiErrorFactory.createApiErrorResponse(
+        ApiErrorSingleResponse errorResponse = ApiErrorFactory.createApiErrorResponse(
                 status,
                 ex.getErrorType(),
                 ex.getMessage(),
@@ -133,7 +132,7 @@ public class ValidationExceptionHandler {
     public ResponseEntity<ApiErrorSingleResponse> handleInvalidTimestampException(InvalidTimestampException ex, WebRequest request) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
 
-        ApiErrorSingleResponse errorResponse = apiErrorFactory.createApiErrorResponse(
+        ApiErrorSingleResponse errorResponse = ApiErrorFactory.createApiErrorResponse(
                 status,
                 ex.getErrorType(),
                 ex.getMessage(),

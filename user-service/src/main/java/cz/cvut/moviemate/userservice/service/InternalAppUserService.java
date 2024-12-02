@@ -14,4 +14,6 @@ public interface InternalAppUserService extends UserDetailsService {
     AppUser save(AppUser appUser);
 
     UserRole findUserRoleByRole(Role role);
+
+    UserRole saveRole(UserRole role);
 }

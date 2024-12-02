@@ -1,8 +1,8 @@
 package cz.cvut.moviemate.userservice.exception.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import cz.cvut.moviemate.userservice.dto.error.ApiErrorSingleResponse;
-import cz.cvut.moviemate.userservice.util.ApiErrorFactory;
+import cz.cvut.moviemate.commonlib.error.ApiErrorSingleResponse;
+import cz.cvut.moviemate.commonlib.utils.ApiErrorFactory;
 import cz.cvut.moviemate.userservice.util.PrincipalUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -21,7 +21,6 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class BaseAccessDeniedHandler implements AccessDeniedHandler {
     private final PrincipalUtil principalUtil;
-    private final ApiErrorFactory apiErrorFactory;
     private final ObjectMapper objectMapper;
 
     private static final String ACCESS_DENIED_MESSAGE = "You do not have permission to access this resource.";
@@ -44,7 +43,7 @@ public class BaseAccessDeniedHandler implements AccessDeniedHandler {
         String username = principalUtil.getPrincipalUsername();
         log.warn("User {} attempted to access the protected URL: {}", username, request.getRequestURI());
 
-        ApiErrorSingleResponse errorResponse = apiErrorFactory.createApiErrorResponse(
+        ApiErrorSingleResponse errorResponse = ApiErrorFactory.createApiErrorResponse(
                 status,
                 "ACCESS_DENIED",
                 ACCESS_DENIED_MESSAGE,
