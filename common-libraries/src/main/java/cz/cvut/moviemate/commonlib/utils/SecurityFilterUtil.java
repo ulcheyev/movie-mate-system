@@ -34,7 +34,7 @@ public class SecurityFilterUtil {
         List<String> roles = appUserClaimsDetails.roles();
         if (userDetailsNotNull(username, email, roles)) {
 
-            List<GrantedAuthority> authorities = roles.stream()
+            List<? extends GrantedAuthority> authorities = roles.stream()
                     .map(SimpleGrantedAuthority::new)
                     .collect(Collectors.toList());
 
