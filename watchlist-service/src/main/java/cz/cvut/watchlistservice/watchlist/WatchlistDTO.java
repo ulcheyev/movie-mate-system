@@ -1,6 +1,5 @@
 package cz.cvut.watchlistservice.watchlist;
 
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

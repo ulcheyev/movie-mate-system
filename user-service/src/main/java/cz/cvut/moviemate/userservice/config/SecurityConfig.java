@@ -2,7 +2,7 @@ package cz.cvut.moviemate.userservice.config;
 
 import cz.cvut.moviemate.userservice.config.filter.FilterLevelExceptionHandler;
 import cz.cvut.moviemate.userservice.config.filter.SecurityFilter;
-import cz.cvut.moviemate.userservice.exception.handler.BaseAccessDeniedHandler;
+import cz.cvut.moviemate.userservice.exception.handler.AccessDeniedExceptionHandler;
 import cz.cvut.moviemate.userservice.service.InternalAppUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -35,7 +35,7 @@ public class SecurityConfig {
     private final InternalAppUserService internalAppUserService;
     private final SecurityFilter securityFilter;
     private final FilterLevelExceptionHandler filterLevelExceptionHandler;
-    private final BaseAccessDeniedHandler baseAccessDeniedHandler;
+    private final AccessDeniedExceptionHandler accessDeniedExceptionHandler;
 
     @Bean
     static GrantedAuthorityDefaults grantedAuthorityDefaults() {
@@ -99,6 +99,6 @@ public class SecurityConfig {
     }
 
     private Customizer<ExceptionHandlingConfigurer<HttpSecurity>> getExceptionHandlingCustomizer() {
-        return configurer -> configurer.accessDeniedHandler(baseAccessDeniedHandler);
+        return configurer -> configurer.accessDeniedHandler(accessDeniedExceptionHandler);
     }
 }

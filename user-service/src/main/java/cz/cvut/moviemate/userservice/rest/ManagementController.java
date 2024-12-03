@@ -40,6 +40,7 @@ public class ManagementController {
     )
     @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = PageDto.class)))
     @ApiResponse(responseCode = "403", description = "Access Denied. You do not have permission to access this resource.")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MODERATOR', 'ROOT')")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PageDto<AppUserDto>> searchUsers(
             @RequestParam(value = "page", defaultValue = "0", required = false) int pageNo,

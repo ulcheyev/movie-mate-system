@@ -5,6 +5,23 @@ spring:
   application:
     name: api-gateway
 
+gateway:
+  routes:
+    user-service-uri: ${MOVIE_MATE_USER_SERVICE_URI}
+    watchlist-service-uri: ${MOVIE_MATE_WATCHLIST_SERVICE_URI}
+    movie-service-uri: ${MOVIE_MATE_MOVIE_SERVICE_URI}
+
+    users-base-path:
+      original: ${MOVIE_MATE_GATEWAY_USERS_ORIGINAL_BASE_PATH}
+      target: ${MOVIE_MATE_GATEWAY_USERS_TARGET_BASE_PATH}
+
+    watchlists-base-path:
+      original: ${MOVIE_MATE_GATEWAY_WATCHLISTS_ORIGINAL_BASE_PATH}
+      target: ${MOVIE_MATE_GATEWAY_WATCHLISTS_TARGET_BASE_PATH}
+
+    movies-base-path:
+      original: ${MOVIE_MATE_GATEWAY_MOVIES_ORIGINAL_BASE_PATH}
+      target: ${MOVIE_MATE_GATEWAY_MOVIES_TARGET_BASE_PATH}
 
 logging:
   level:

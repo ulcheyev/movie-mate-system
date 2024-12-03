@@ -1,4 +1,4 @@
-package cz.cvut.moviemate.commonlib.util;
+package cz.cvut.moviemate.commonlib.utils;
 
 public class StringUtil {
 

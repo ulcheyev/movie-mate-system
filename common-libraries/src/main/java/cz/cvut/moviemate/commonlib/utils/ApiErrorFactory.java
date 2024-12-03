@@ -11,6 +11,9 @@ import java.time.LocalDateTime;
 import java.util.Map;
 
 public class ApiErrorFactory {
+
+    private ApiErrorFactory() {}
+
     public static ApiErrorMultipleResponses createApiErrorResponses(
             HttpStatus status,
             String errorName,

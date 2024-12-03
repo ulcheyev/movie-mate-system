@@ -2,7 +2,6 @@ package cz.cvut.watchlistservice.watchlist;
 
 import cz.cvut.moviemate.commonlib.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;

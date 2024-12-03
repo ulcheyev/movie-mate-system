@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 
 public class SecurityFilterUtil {
 
-
     private static boolean userDetailsNotNull(String username, String email, List<String> roles) {
         return username != null && email != null && roles != null;
     }
@@ -35,7 +34,7 @@ public class SecurityFilterUtil {
         List<String> roles = appUserClaimsDetails.roles();
         if (userDetailsNotNull(username, email, roles)) {
 
-            List<GrantedAuthority> authorities = roles.stream()
+            List<? extends GrantedAuthority> authorities = roles.stream()
                     .map(SimpleGrantedAuthority::new)
                     .collect(Collectors.toList());
 
@@ -44,6 +43,4 @@ public class SecurityFilterUtil {
             throw new RuntimeException("User details cannot have null fields.");
         }
     }
-
-
 }

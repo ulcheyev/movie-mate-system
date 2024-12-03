@@ -12,7 +12,7 @@ public class RouteValidator {
 
     @Value("${MOVIE_MATE_USER_SERVICE_AUTH_API_PATH}")
     private String authApiPath;
-    public List<String> unprotectedURLs;
+    private List<String> unprotectedURLs;
 
     @PostConstruct
     protected void  init() {
