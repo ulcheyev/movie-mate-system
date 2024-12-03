@@ -71,7 +71,7 @@ public class MovieController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PageDto<MoviePreviewDto>> getAllMovies(
             @RequestParam(value = "page", defaultValue = "0", required = false) int pageNo,
             @RequestParam(value = "size", defaultValue = "10", required = false) int pageSize,

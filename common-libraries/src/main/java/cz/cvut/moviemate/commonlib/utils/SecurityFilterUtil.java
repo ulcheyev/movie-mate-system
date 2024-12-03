@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 
 public class SecurityFilterUtil {
 
-
     private static boolean userDetailsNotNull(String username, String email, List<String> roles) {
         return username != null && email != null && roles != null;
     }
@@ -44,6 +43,4 @@ public class SecurityFilterUtil {
             throw new RuntimeException("User details cannot have null fields.");
         }
     }
-
-
 }

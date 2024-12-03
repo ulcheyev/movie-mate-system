@@ -2,7 +2,6 @@ package cz.cvut.moviemate.apigateway.config;
 
 import cz.cvut.moviemate.apigateway.filter.AuthValidationFilter;
 import cz.cvut.moviemate.apigateway.filter.CustomGlobalFilter;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.cloud.gateway.route.RouteLocator;
@@ -17,48 +16,38 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class GatewayConfig {
 
     private final AuthValidationFilter authValidationFilter;
+    private final GatewayRoutes gatewayRoutes;
 
-    @Value("${MOVIE_MATE_USER_SERVICE_URI}")
-    private String userServiceUri;
-
-    @Value("${MOVIE_MATE_WATCHLIST_SERVICE_URI}")
-    private String watchlistServiceUri;
-
-    @Value("${MOVIE_MATE_GATEWAY_USERS_ORIGINAL_BASE_PATH}")
-    private String usersOriginalBasePath;
-
-    @Value("${MOVIE_MATE_GATEWAY_USERS_TARGET_BASE_PATH}")
-    private String usersTargetBasePath;
-
-    @Value("${MOVIE_MATE_GATEWAY_WATCHLISTS_ORIGINAL_BASE_PATH}")
-    private String watchlistsOriginalBasePath;
-
-    @Value("${MOVIE_MATE_GATEWAY_WATCHLISTS_TARGET_BASE_PATH}")
-    private String watchlistsTargetBasePath;
-
-    public GatewayConfig(@Lazy AuthValidationFilter authValidationFilter) {
+    public GatewayConfig(@Lazy AuthValidationFilter authValidationFilter, GatewayRoutes gatewayRoutes) {
         this.authValidationFilter = authValidationFilter;
+        this.gatewayRoutes = gatewayRoutes;
     }
-
 
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
-        return builder
-                .routes()
+        return builder.routes()
                 .route(r -> r
-                        .path(usersOriginalBasePath + "/**")
+                        .path(gatewayRoutes.getUsersBasePath().getOriginal() + "/**")
                         .filters(f ->
-                                rewriteBasePath(f, usersOriginalBasePath, usersTargetBasePath)
+                                rewriteBasePath(f, gatewayRoutes.getUsersBasePath().getOriginal(), gatewayRoutes.getUsersBasePath().getTarget())
                                         .filter(authValidationFilter)
                         )
-                        .uri(userServiceUri))
+                        .uri(gatewayRoutes.getUserServiceUri()))
                 .route(r -> r
-                        .path(watchlistsOriginalBasePath + "/**")
+                        .path(gatewayRoutes.getWatchlistsBasePath().getOriginal() + "/**")
                         .filters(f ->
-                                rewriteBasePath(f, watchlistsOriginalBasePath, watchlistsTargetBasePath)
+                                rewriteBasePath(f, gatewayRoutes.getWatchlistsBasePath().getOriginal(), gatewayRoutes.getWatchlistsBasePath().getTarget())
                                         .filter(authValidationFilter)
                         )
-                        .uri(watchlistServiceUri))
+                        .uri(gatewayRoutes.getWatchlistServiceUri()))
+                .route(r -> r
+                        .path(gatewayRoutes.getMoviesBasePath().getOriginal() + "/**")
+                        .filters(f ->
+                                rewriteBasePath(f, gatewayRoutes.getMoviesBasePath().getOriginal(), gatewayRoutes.getMoviesBasePath().getTarget())
+                                        .filter(authValidationFilter)
+                        )
+                        .uri(gatewayRoutes.getMovieServiceUri())
+                )
                 .build();
     }
 
@@ -79,6 +68,4 @@ public class GatewayConfig {
     public WebClient.Builder webClientBuilder() {
         return WebClient.builder();
     }
-
-
 }

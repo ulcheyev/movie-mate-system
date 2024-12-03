@@ -1,9 +1,7 @@
 package cz.cvut.moviemate.movieservice.config;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import cz.cvut.moviemate.commonlib.utils.RedisConfigUtils;
 import cz.cvut.moviemate.movieservice.config.keygen.PageKeyGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,7 +23,6 @@ import java.time.Duration;
 @Configuration
 @RequiredArgsConstructor
 public class RedisConfig implements CachingConfigurer {
-    private final ObjectMapper objectMapper;
 
     @Value("${spring.cache.host}")
     private String redisHost;
@@ -54,7 +51,7 @@ public class RedisConfig implements CachingConfigurer {
 
     @Bean
     public RedisCacheConfiguration cacheConfiguration() {
-        ObjectMapper om = getObjectMapperForSerializer();
+        ObjectMapper om = RedisConfigUtils.getObjectMapperForSerializer();
 
         GenericJackson2JsonRedisSerializer serializer = new GenericJackson2JsonRedisSerializer(om);
 
@@ -62,17 +59,6 @@ public class RedisConfig implements CachingConfigurer {
                 .entryTtl(Duration.ofMinutes(cacheTTL))
                 .serializeValuesWith(
                         RedisSerializationContext.SerializationPair.fromSerializer(serializer)
-                );
-    }
-
-    private ObjectMapper getObjectMapperForSerializer() {
-        return objectMapper.copy()
-                .registerModule(new JavaTimeModule())
-                .registerModule(new Jdk8Module())
-                .activateDefaultTyping(
-                        objectMapper.getPolymorphicTypeValidator(),
-                        ObjectMapper.DefaultTyping.NON_FINAL,
-                        JsonTypeInfo.As.PROPERTY
                 );
     }
 

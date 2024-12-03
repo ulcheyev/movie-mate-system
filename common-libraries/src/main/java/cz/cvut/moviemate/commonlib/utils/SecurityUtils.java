@@ -1,10 +1,11 @@
 package cz.cvut.moviemate.commonlib.utils;
 
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
 public class SecurityUtils {
+
+    private SecurityUtils() {}
 
     public static String getPrincipalUsername(Authentication authentication) {
         if (authentication != null && authentication.isAuthenticated()) {
