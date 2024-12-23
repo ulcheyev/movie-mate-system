@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 @ControllerAdvice
 @Order(-1)
-public class ValidationExceptionHandler {
+public class ValidationExceptionHandler extends GlobalExceptionHandler{
 
     @ExceptionHandler(DuplicateException.class)
     @ResponseBody

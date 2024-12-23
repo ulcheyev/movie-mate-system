@@ -36,6 +36,12 @@ public class MovieController {
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping(value = "/all-by-ids", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<MovieDetailsDto>> getMovies(@RequestBody List<String> ids) {
+        log.info("Getting movies: {}", ids);
+        return ResponseEntity.ok(movieService.getMovies(ids));
+    }
+
     @GetMapping(value = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PageDto<MoviePreviewDto>> getAllMovies(
             @RequestParam(value = "page", defaultValue = "0", required = false) int pageNo,

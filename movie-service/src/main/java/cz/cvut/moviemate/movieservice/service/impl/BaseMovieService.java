@@ -171,10 +171,19 @@ public class BaseMovieService implements MovieService {
     }
 
     @Override
+    @Cacheable(value = "movies-ids", key = "#ids")
+    public List<MovieDetailsDto> getMovies(List<String> ids) {
+        return movieRepository.findByIdIn(ids).stream().map(
+                movieMapper::toDetailsDto
+        ).toList();
+    }
+
+    @Override
     @Caching(
             evict = {
                     @CacheEvict(value = "movies", key = "#id"),
-                    @CacheEvict(value = "page", allEntries = true)
+                    @CacheEvict(value = "page", allEntries = true),
+                    @CacheEvict(value = "movies-ids", allEntries = true)
             }
     )
     public MessageResponse deleteMovie(String id) {
@@ -187,7 +196,10 @@ public class BaseMovieService implements MovieService {
     @Override
     @Caching(
             put = @CachePut(value = "movies", key = "#id"),
-            evict = @CacheEvict(value = "page", allEntries = true)
+            evict = {
+                    @CacheEvict(value = "page", allEntries = true),
+                    @CacheEvict(value = "movies-ids", allEntries = true)
+            }
     )
     public MovieDetailsDto updateMovie(String id, MovieRequestDto movieDto) {
         if (isMovieExistsByTitle(movieDto.title()))

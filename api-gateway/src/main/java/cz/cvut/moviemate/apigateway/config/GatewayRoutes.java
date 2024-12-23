@@ -14,10 +14,13 @@ public class GatewayRoutes {
     private String userServiceUri;
     private String watchlistServiceUri;
     private String movieServiceUri;
+    private String activityServiceUri;
 
     private BasePath usersBasePath;
     private BasePath watchlistsBasePath;
     private BasePath moviesBasePath;
+    private BasePath activityBasePath;
+
 
     @Getter
     @Setter

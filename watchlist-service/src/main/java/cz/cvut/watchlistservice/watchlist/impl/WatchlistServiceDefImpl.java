@@ -72,7 +72,7 @@ public class WatchlistServiceDefImpl implements WatchlistService {
                     watchlistMapper.update(existingWatchlist, watchlist);
                     Watchlist updatedWatchlist = watchlistRepository.save(existingWatchlist);
                     redisCacheService.deleteKeysByPattern("watchlists::" + SecurityUtils.getPrincipalUsername(
-                    SecurityContextHolder.getContext().getAuthentication()) + "*");
+                            SecurityContextHolder.getContext().getAuthentication()) + "*");
                     return updatedWatchlist;
                 }
         ).orElseThrow(() -> new NotFoundException("Watchlist not found with id: " + id));

@@ -104,8 +104,8 @@ public class BaseAuthService implements AuthService {
     }
 
     private void validateRegisterRequest(RegisterRequest registerRequest) {
-       validationUtil.checkDuplicate(registerRequest.username().toLowerCase(), internalAppUserService::findUserByUsername, "username");
-       validationUtil.checkDuplicate(registerRequest.email(), internalAppUserService::findUserByEmail, "email");
+        validationUtil.checkDuplicate(registerRequest.username().toLowerCase(), internalAppUserService::findUserByUsername, "username");
+        validationUtil.checkDuplicate(registerRequest.email(), internalAppUserService::findUserByEmail, "email");
     }
 
 

@@ -8,4 +8,5 @@ public record UserHistoryDto(
         LocalDateTime updatedAt,
         LocalDateTime deletedAt,
         LocalDateTime bannedAt
-) implements Serializable {}
+) implements Serializable {
+}

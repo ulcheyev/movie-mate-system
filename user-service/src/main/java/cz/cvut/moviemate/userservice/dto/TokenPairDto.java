@@ -5,4 +5,5 @@ import java.io.Serializable;
 public record TokenPairDto(
         String accessToken,
         String refreshToken
-) implements Serializable {}
+) implements Serializable {
+}

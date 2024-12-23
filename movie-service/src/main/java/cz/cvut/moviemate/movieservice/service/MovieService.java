@@ -22,6 +22,8 @@ public interface MovieService {
 
     MovieDetailsDto getMovie(String id);
 
+    List<MovieDetailsDto> getMovies(List<String> ids);
+
     MessageResponse deleteMovie(String id);
 
     MovieDetailsDto updateMovie(String id, MovieRequestDto movieDto);

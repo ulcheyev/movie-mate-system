@@ -1,11 +1,28 @@
 server:
   port: ${MOVIE_MATE_ACTIVITY_SERVICE_PORT:7050}
+  servlet:
+    context-path: ${MOVIE_MATE_ACTIVITY_SERVICE_CONTEXT_PATH:/api/v1}
 
 spring:
   application:
     name: activity-service
 
+  cassandra:
+    schema-action: CREATE_IF_NOT_EXISTS
+    local-datacenter: ${MOVIE_MATE_CASSANDRA_DATACENTER}
+    keyspace-name: ${MOVIE_MATE_ACTIVITY_SERVICE_CASSANDRA_KEYSPACE}
+    contact-points: ${MOVIE_MATE_CASSANDRA_CONTACT_POINTS}
+    replication-factor: ${MOVIE_MATE_ACTIVITY_SERVICE_CASSANDRA_REPLICATION_FACTOR}
+
+
 logging:
   level:
     org:
       springframework: INFO
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${MOVIE_MATE_DISCOVERY_SERVER_URL}
+    registerWithEureka: true
+    fetchRegistry: true

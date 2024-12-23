@@ -4,4 +4,5 @@ import java.io.Serializable;
 
 public record MessageResponse(
         String message
-) implements Serializable {}
+) implements Serializable {
+}

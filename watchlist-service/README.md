@@ -1,7 +1,7 @@
 # MovieMate Watchlist Service
 
-The Watchlist Service is a core component of the MovieMate application, 
-responsible for managing user watchlists. It provides APIs for creating, updating, 
+The Watchlist Service is a core component of the MovieMate application,
+responsible for managing user watchlists. It provides APIs for creating, updating,
 deleting, and retrieving watchlists, and integrates with other services through the Discovery Server and API Gateway.
 
 ---

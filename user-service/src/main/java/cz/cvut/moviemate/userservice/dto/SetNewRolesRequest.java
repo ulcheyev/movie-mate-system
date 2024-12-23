@@ -8,4 +8,5 @@ import java.io.Serializable;
 public record SetNewRolesRequest(
         @Schema(description = "Roles to add", example = "[\"USER\", \"ADMIN\"]")
         Role[] roles
-) implements Serializable {}
+) implements Serializable {
+}

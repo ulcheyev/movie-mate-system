@@ -6,4 +6,5 @@ public record AuthorizationResponse(
         AppUserDto userDetails,
         String accessToken,
         String refreshToken
-) implements Serializable {}
+) implements Serializable {
+}

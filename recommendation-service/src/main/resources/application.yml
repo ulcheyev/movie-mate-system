@@ -4,8 +4,20 @@ server:
 spring:
   application:
     name: recommendation-service
+  neo4j:
+    authentication:
+      username: ${MOVIE_MATE_NEO4J_USERNAME}
+      password: ${MOVIE_MATE_NEO4J_PASSWORD}
+    uri: ${MOVIE_MATE_NEO4J_URI}
 
 logging:
   level:
     org:
       springframework: INFO
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${MOVIE_MATE_DISCOVERY_SERVER_URL}
+    registerWithEureka: true
+    fetchRegistry: true

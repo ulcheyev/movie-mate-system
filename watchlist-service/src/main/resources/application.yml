@@ -11,13 +11,13 @@ spring:
       host: ${MOVIE_MATE_MONGO_HOST}
       port: ${MOVIE_MATE_MONGO_PORT}
       database: ${MOVIE_MATE_WATCHLIST_SERVICE_MONGO_DB_NAME}
-      username: ${MOVIE_MATE_MONGO_USERNAME:}
-      password: ${MOVIE_MATE_MONGO_PASSWORD:}
+#      username: ${MOVIE_MATE_MONGO_USERNAME}
+#      password: ${MOVIE_MATE_MONGO_PASSWORD}
 
     redis:
       host: ${MOVIE_MATE_REDIS_HOST}
       port: ${MOVIE_MATE_REDIS_PORT}
-      password: ${MOVIE_MATE_REDIS_PASSWORD:}
+      password: ${MOVIE_MATE_REDIS_PASSWORD}
       database-idx: ${MOVIE_MATE_WATCHLIST_SERVICE_DATABASE_INDEX:0}
       ttl: ${MOVIE_MATE_WATCHLIST_SERVICE_CACHE_TTL_IN_HOURS:-1}
 
