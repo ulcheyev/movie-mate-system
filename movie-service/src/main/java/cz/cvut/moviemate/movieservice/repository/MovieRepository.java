@@ -1,5 +1,6 @@
 package cz.cvut.moviemate.movieservice.repository;
 
+import cz.cvut.moviemate.movieservice.model.Genre;
 import cz.cvut.moviemate.movieservice.model.Movie;
 import cz.cvut.moviemate.movieservice.repository.custom.CustomMovieRepository;
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -12,4 +13,5 @@ public interface MovieRepository extends MongoRepository<Movie, String>, CustomM
 
     boolean existsByTitle(String title);
     List<Movie> findByIdIn(List<String> ids);
+    List<Movie> findByGenresContains(Genre genre);
 }

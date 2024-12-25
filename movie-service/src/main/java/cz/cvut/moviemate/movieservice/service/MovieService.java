@@ -5,6 +5,7 @@ import cz.cvut.moviemate.movieservice.dto.prop.GenreDto;
 import org.springframework.data.domain.Sort;
 
 import java.util.List;
+import java.util.Set;
 
 public interface MovieService {
 
@@ -13,6 +14,8 @@ public interface MovieService {
     GenreResponse saveGenre(GenreDto genre);
 
     List<GenreResponse> getAllGenres();
+
+    List<GenreResponse> getTopGenres();
 
     MessageResponse deleteGenre(String id);
 
@@ -23,6 +26,8 @@ public interface MovieService {
     MovieDetailsDto getMovie(String id);
 
     List<MovieDetailsDto> getMovies(List<String> ids);
+
+    Set<String> getMovieIdsByGenre(List<String> genres);
 
     MessageResponse deleteMovie(String id);
 
