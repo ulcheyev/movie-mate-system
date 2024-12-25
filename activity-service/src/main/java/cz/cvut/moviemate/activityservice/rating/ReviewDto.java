@@ -16,7 +16,7 @@ public record ReviewDto  (
      @Range(min = 1, max = 5, message = "Rate can have min 1 and max 5 stars.")
      int rate,
 
-     @Size(min = 0, max = 1500, message = "Review text can have max 1500 characters.")
+     @Size(max = 1500, message = "Review text can have max 1500 characters.")
      String reviewText,
 
      @NotBlank(message = "Movie id cannot be blank.")

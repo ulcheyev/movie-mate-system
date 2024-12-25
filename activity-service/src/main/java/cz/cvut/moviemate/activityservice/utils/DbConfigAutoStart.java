@@ -1,9 +1,13 @@
 package cz.cvut.moviemate.activityservice.utils;
 
+import com.datastax.oss.driver.api.core.CqlSession;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.cassandra.config.AbstractCassandraConfiguration;
 import org.springframework.data.cassandra.config.SchemaAction;
+import org.springframework.data.cassandra.core.CassandraTemplate;
+import org.springframework.data.cassandra.core.convert.CassandraConverter;
 import org.springframework.data.cassandra.core.cql.keyspace.CreateKeyspaceSpecification;
 import org.springframework.data.cassandra.core.cql.keyspace.KeyspaceOption;
 
@@ -22,17 +26,20 @@ public class DbConfigAutoStart extends AbstractCassandraConfiguration {
     @Value("${spring.cassandra.replication-factor:1}")
     private int replicationFactor;
 
+    @Bean
+    public CassandraTemplate cassandraTemplate(CqlSession session, CassandraConverter converter) {
+        return new CassandraTemplate(session, converter);
+    }
+
     @Override
     public String getContactPoints() {
         return contactPoints;
     }
 
-
     @Override
     public String getKeyspaceName() {
         return keyspaceName;
     }
-
 
     @Override
     protected List<CreateKeyspaceSpecification> getKeyspaceCreations() {
@@ -42,7 +49,6 @@ public class DbConfigAutoStart extends AbstractCassandraConfiguration {
         return Arrays.asList(specification);
     }
 
-
     @Override
     public SchemaAction getSchemaAction() {
         return SchemaAction.CREATE_IF_NOT_EXISTS;
@@ -50,7 +56,10 @@ public class DbConfigAutoStart extends AbstractCassandraConfiguration {
 
     @Override
     public String[] getEntityBasePackages() {
-        return new String[]{"cz.cvut.moviemate.activityservice.rating"};
+        return new String[]{
+                "cz.cvut.moviemate.activityservice.rating",
+                "cz.cvut.moviemate.activityservice.preference",
+        };
     }
 
 }

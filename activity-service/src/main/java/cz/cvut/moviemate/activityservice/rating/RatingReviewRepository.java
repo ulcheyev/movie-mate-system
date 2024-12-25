@@ -7,5 +7,6 @@ import java.util.List;
 
 @Repository
 public interface RatingReviewRepository extends CassandraRepository<RatingReview, RatingReviewKey> {
+
     List<RatingReview> findByKeyMovieId(String movieId);
 }

@@ -23,5 +23,4 @@ public class RatingReview {
     private String reviewText;
     private Set<String> tags;
     private Map<String, String> metadata;
-
 }

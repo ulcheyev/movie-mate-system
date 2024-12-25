@@ -14,7 +14,7 @@ import java.time.Instant;
 import java.util.List;
 
 @Service
-@Slf4j
+@Slf4j(topic = "RATING_REVIEW_SERVICE")
 @RequiredArgsConstructor
 public class RatingReviewDefServiceImpl implements RatingReviewService {
 
@@ -27,7 +27,6 @@ public class RatingReviewDefServiceImpl implements RatingReviewService {
         log.info("Fetching reviews for movie with ID: {}", movieId);
         return ratingReviewRepository.findByKeyMovieId(movieId);
     }
-
 
     @Override
     @CacheEvict(value = "ratings", key = "#review.key.movieId")
@@ -53,15 +52,15 @@ public class RatingReviewDefServiceImpl implements RatingReviewService {
 
     @Override
     @CacheEvict(value = "ratings", key = "#movieId")
-    public void deleteReview(String username, String movieId, Instant timetamp) {
+    public void deleteReview(String username, String movieId, Instant timestamp) {
         log.info("Deleting review for movie with ID: {} by user: {}", movieId, username);
 
-        if (username == null || movieId == null || timetamp == null) {
+        if (username == null || movieId == null || timestamp == null) {
             log.error("Username, movieId or timestamp is null");
             throw new InvalidArgumentException("Username, movieId and timestamp cannot be null.");
         }
 
-        RatingReviewKey key = new RatingReviewKey(movieId, username, timetamp);
+        RatingReviewKey key = new RatingReviewKey(movieId, username, timestamp);
 
         if (!ratingReviewRepository.existsById(key)) {
             log.error("Review not found for movie: {} and user: {}", movieId, username);

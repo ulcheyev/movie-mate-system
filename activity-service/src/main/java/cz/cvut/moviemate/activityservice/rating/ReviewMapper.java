@@ -22,6 +22,8 @@ public interface ReviewMapper {
     default RatingReviewKey extractRatingReviewKey(ReviewDto reviewDto) {
         return new RatingReviewKey(reviewDto.movieId(), SecurityUtils.getPrincipalUsername(
                 SecurityContextHolder.getContext().getAuthentication()
-        ), reviewDto != null ? reviewDto.timestamp():Instant.now());
+        ), reviewDto != null
+                ? reviewDto.timestamp()
+                : Instant.now());
     }
 }

@@ -48,6 +48,14 @@ public class GatewayConfig {
                         )
                         .uri(gatewayRoutes.getMovieServiceUri())
                 )
+                .route(r -> r
+                        .path(gatewayRoutes.getActivityBasePath().getOriginal() + "/**")
+                        .filters(f ->
+                                rewriteBasePath(f, gatewayRoutes.getActivityBasePath().getOriginal(), gatewayRoutes.getActivityBasePath().getTarget())
+                                        .filter(authValidationFilter)
+                        )
+                        .uri(gatewayRoutes.getActivityServiceUri())
+                )
                 .build();
     }
 

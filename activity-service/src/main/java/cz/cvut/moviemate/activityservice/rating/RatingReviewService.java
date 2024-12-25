@@ -11,6 +11,6 @@ public interface RatingReviewService {
 
     RatingReview updateReview(RatingReview review);
 
-    void deleteReview(String username, String movieId, Instant timetamp);
+    void deleteReview(String username, String movieId, Instant timestamp);
 
 }
