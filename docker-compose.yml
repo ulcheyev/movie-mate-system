@@ -24,6 +24,8 @@ services:
       - discovery-server
     networks:
       - movie-mate-network
+      - bridge
+      - kafka-server_kafka-net
 
   movie-service:
     image: ${DOCKER_REGISTRY}/movie-service:${VERSION}
@@ -37,6 +39,8 @@ services:
       - api-gateway
     networks:
       - movie-mate-network
+      - bridge
+      - kafka-server_kafka-net
 
   activity-service:
     image: ${DOCKER_REGISTRY}/activity-service:${VERSION}
@@ -50,6 +54,8 @@ services:
       - api-gateway
     networks:
       - movie-mate-network
+      - bridge
+      - kafka-server_kafka-net
 
   recommendation-service:
     image: ${DOCKER_REGISTRY}/recommendation-service:${VERSION}
@@ -63,6 +69,8 @@ services:
       - api-gateway
     networks:
       - movie-mate-network
+      - bridge
+      - kafka-server_kafka-net
 
   user-service:
     image: ${DOCKER_REGISTRY}/user-service:${VERSION}
@@ -76,6 +84,9 @@ services:
       - api-gateway
     networks:
       - movie-mate-network
+      - postgre_default
+      - bridge
+      - kafka-server_kafka-net
 
   watchlist-service:
     image: ${DOCKER_REGISTRY}/watchlist-service:${VERSION}
@@ -89,6 +100,8 @@ services:
       - api-gateway
     networks:
       - movie-mate-network
+      - bridge
+      - kafka-server_kafka-net
 
   api-docs:
     image: ${DOCKER_REGISTRY}/api-docs:${VERSION}
@@ -110,8 +123,6 @@ services:
 networks:
   movie-mate-network:
     driver: bridge
-  bridge:
-    external: true
   postgre_default:
     external: true
   kafka-server_kafka-net:
