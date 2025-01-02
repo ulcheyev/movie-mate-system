@@ -3,6 +3,7 @@
 BRANCH="test"
 DOCKER_REGISTRY="movie-mate"
 
+mvn clean install -DskipTests
 mvn spring-boot:build-image -Ddocker.registry=$DOCKER_REGISTRY -DskipTests
 
 VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)

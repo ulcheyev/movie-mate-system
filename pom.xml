@@ -33,10 +33,10 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>common-libraries</module>
         <module>api-docs</module>
         <module>api-gateway</module>
         <module>discovery-server</module>
-        <module>common-libraries</module>
         <module>movie-service</module>
         <module>activity-service</module>
         <module>recommendation-service</module>

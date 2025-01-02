@@ -3,4 +3,4 @@ services:
   api-docs:
     image: ${DOCKER_REGISTRY}/api-docs:${VERSION}
     ports:
-      - "8085:8085"
+      - "7777:7777"
