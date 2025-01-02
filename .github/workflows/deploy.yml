@@ -24,6 +24,6 @@ jobs:
             cd ~/Documents/movie-mate-system
             git fetch origin
             git checkout test
-            docker-compose down
-            docker-compose up -d
+            docker compose down
+            docker compose up -d
           EOF
