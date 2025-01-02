@@ -19,6 +19,7 @@ public class GatewayConfig {
     private final AuthValidationFilter authValidationFilter;
     private final GatewayRoutes gatewayRoutes;
 
+
     @Value("${server.servlet.context-path}")
     private String BASE_CONTEXT_PATH;
 
@@ -70,7 +71,7 @@ public class GatewayConfig {
 
     private GatewayFilterSpec configureFilters(GatewayFilterSpec filters, String originalBasePath, String targetBasePath) {
         return filters
-                .rewritePath(originalBasePath + "/(?<remaining>.*)", targetBasePath + "/${remaining}")
+                .rewritePath(BASE_CONTEXT_PATH + originalBasePath + "/(?<remaining>.*)", targetBasePath + "/${remaining}")
                 .filter(authValidationFilter);
     }
 
