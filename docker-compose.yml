@@ -110,3 +110,9 @@ services:
 networks:
   movie-mate-network:
     driver: bridge
+  bridge:
+    external: true
+  postgre_default:
+    external: true
+  kafka-server_kafka-net:
+    external: true

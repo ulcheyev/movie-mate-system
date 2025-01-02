@@ -1,5 +1,7 @@
 server:
   port: ${MOVIE_MATE_API_GATEWAY_PORT:7080}
+  servlet:
+    context-path: ${MOVIE_MATE_BASE_CONTEXT_PATH}
 
 spring:
   application:
