@@ -93,7 +93,7 @@
                         </exclude>
                     </excludes>
                     <image>
-                        <name>${project.artifactId}:${project.version}</name>
+                        <name>${docker.registry}/${project.artifactId}:${project.version}</name>
                     </image>
                     <layers>
                         <enabled>true</enabled>

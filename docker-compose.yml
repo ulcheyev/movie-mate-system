@@ -1,4 +1,10 @@
 version: '3.8'
 services:
-  test-hello-world:
-    image: hello-world:latest
+
+
+
+
+  api-docs:
+    image: ${DOCKER_REGISTRY}/api-docs:${VERSION}
+    ports:
+      - "8085:8085"
