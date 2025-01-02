@@ -16,7 +16,7 @@ services:
     image: ${DOCKER_REGISTRY}/api-gateway:${VERSION}
     container_name: api-gateway
     ports:
-      - "${API_GATEWAY_PORT}:${API_GATEWAY_PORT}"
+      - "${MOVIE_MATE_API_GATEWAY_PORT}:${MOVIE_MATE_API_GATEWAY_PORT}"
     env_file:
       - ./.env
       - ./api-gateway/.env
@@ -29,7 +29,7 @@ services:
     image: ${DOCKER_REGISTRY}/movie-service:${VERSION}
     container_name: movie-service
     ports:
-      - "${MOVIE_SERVICE_PORT}:${MOVIE_SERVICE_PORT}"
+      - "${MOVIE_MATE_MOVIE_SERVICE_PORT}:${MOVIE_MATE_MOVIE_SERVICE_PORT}"
     env_file:
       - ./.env
       - ./movie-service/.env
@@ -42,7 +42,7 @@ services:
     image: ${DOCKER_REGISTRY}/activity-service:${VERSION}
     container_name: activity-service
     ports:
-      - "${ACTIVITY_SERVICE_PORT}:${ACTIVITY_SERVICE_PORT}"
+      - "${MOVIE_MATE_ACTIVITY_SERVICE_PORT}:${MOVIE_MATE_ACTIVITY_SERVICE_PORT}"
     env_file:
       - ./.env
       - ./activity-service/.env
@@ -55,7 +55,7 @@ services:
     image: ${DOCKER_REGISTRY}/recommendation-service:${VERSION}
     container_name: recommendation-service
     ports:
-      - "${RECOMMENDATION_SERVICE_PORT}:${RECOMMENDATION_SERVICE_PORT}"
+      - "${MOVIE_MATE_RECOMMENDATION_SERVICE_PORT}:${MOVIE_MATE_RECOMMENDATION_SERVICE_PORT}"
     env_file:
       - ./.env
       - ./recommendation-service/.env
@@ -68,7 +68,7 @@ services:
     image: ${DOCKER_REGISTRY}/user-service:${VERSION}
     container_name: user-service
     ports:
-      - "${USER_SERVICE_PORT}:${USER_SERVICE_PORT}"
+      - "${MOVIE_MATE_USER_SERVICE_PORT}:${MOVIE_MATE_USER_SERVICE_PORT}"
     env_file:
       - ./.env
       - ./user-service/.env
@@ -81,7 +81,7 @@ services:
     image: ${DOCKER_REGISTRY}/watchlist-service:${VERSION}
     container_name: watchlist-service
     ports:
-      - "${WATCHLIST_SERVICE_PORT}:${WATCHLIST_SERVICE_PORT}"
+      - "${MOVIE_MATE_WATCHLIST_SERVICE_PORT}:${MOVIE_MATE_WATCHLIST_SERVICE_PORT}"
     env_file:
       - ./.env
       - ./watchlist-service/.env
@@ -94,7 +94,7 @@ services:
     image: ${DOCKER_REGISTRY}/api-docs:${VERSION}
     container_name: api-docs
     ports:
-      - "${API_DOCS_PORT}:${API_DOCS_PORT}"
+      - "${MOVIE_MATE_API_DOCS_PORT}:${MOVIE_MATE_API_DOCS_PORT}"
     env_file:
       - ./.env
       - ./api-docs/.env
