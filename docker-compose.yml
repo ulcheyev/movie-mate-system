@@ -1,6 +1,112 @@
 version: '3.8'
+
 services:
+  discovery-server:
+    image: ${DOCKER_REGISTRY}/discovery-server:${VERSION}
+    container_name: discovery-server
+    ports:
+      - "${DISCOVERY_SERVER_PORT}:${DISCOVERY_SERVER_PORT}"
+    env_file:
+      - ./.env
+      - ./discovery-server/.env
+    networks:
+      - movie-mate-network
+
+  api-gateway:
+    image: ${DOCKER_REGISTRY}/api-gateway:${VERSION}
+    container_name: api-gateway
+    ports:
+      - "${API_GATEWAY_PORT}:${API_GATEWAY_PORT}"
+    env_file:
+      - ./.env
+      - ./api-gateway/.env
+    depends_on:
+      - discovery-server
+    networks:
+      - movie-mate-network
+
+  movie-service:
+    image: ${DOCKER_REGISTRY}/movie-service:${VERSION}
+    container_name: movie-service
+    ports:
+      - "${MOVIE_SERVICE_PORT}:${MOVIE_SERVICE_PORT}"
+    env_file:
+      - ./.env
+      - ./movie-service/.env
+    depends_on:
+      - api-gateway
+    networks:
+      - movie-mate-network
+
+  activity-service:
+    image: ${DOCKER_REGISTRY}/activity-service:${VERSION}
+    container_name: activity-service
+    ports:
+      - "${ACTIVITY_SERVICE_PORT}:${ACTIVITY_SERVICE_PORT}"
+    env_file:
+      - ./.env
+      - ./activity-service/.env
+    depends_on:
+      - api-gateway
+    networks:
+      - movie-mate-network
+
+  recommendation-service:
+    image: ${DOCKER_REGISTRY}/recommendation-service:${VERSION}
+    container_name: recommendation-service
+    ports:
+      - "${RECOMMENDATION_SERVICE_PORT}:${RECOMMENDATION_SERVICE_PORT}"
+    env_file:
+      - ./.env
+      - ./recommendation-service/.env
+    depends_on:
+      - api-gateway
+    networks:
+      - movie-mate-network
+
+  user-service:
+    image: ${DOCKER_REGISTRY}/user-service:${VERSION}
+    container_name: user-service
+    ports:
+      - "${USER_SERVICE_PORT}:${USER_SERVICE_PORT}"
+    env_file:
+      - ./.env
+      - ./user-service/.env
+    depends_on:
+      - api-gateway
+    networks:
+      - movie-mate-network
+
+  watchlist-service:
+    image: ${DOCKER_REGISTRY}/watchlist-service:${VERSION}
+    container_name: watchlist-service
+    ports:
+      - "${WATCHLIST_SERVICE_PORT}:${WATCHLIST_SERVICE_PORT}"
+    env_file:
+      - ./.env
+      - ./watchlist-service/.env
+    depends_on:
+      - api-gateway
+    networks:
+      - movie-mate-network
+
   api-docs:
     image: ${DOCKER_REGISTRY}/api-docs:${VERSION}
+    container_name: api-docs
     ports:
-      - "7777:7777"
+      - "${API_DOCS_PORT}:${API_DOCS_PORT}"
+    env_file:
+      - ./.env
+      - ./api-docs/.env
+    depends_on:
+      - movie-service
+      - activity-service
+      - recommendation-service
+      - user-service
+      - watchlist-service
+    networks:
+      - movie-mate-network
+
+networks:
+  movie-mate-network:
+    driver: bridge
