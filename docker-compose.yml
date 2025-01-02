@@ -24,7 +24,6 @@ services:
       - discovery-server
     networks:
       - movie-mate-network
-      - bridge
       - kafka-server_kafka-net
 
   movie-service:
@@ -39,7 +38,6 @@ services:
       - api-gateway
     networks:
       - movie-mate-network
-      - bridge
       - kafka-server_kafka-net
 
   activity-service:
@@ -54,7 +52,6 @@ services:
       - api-gateway
     networks:
       - movie-mate-network
-      - bridge
       - kafka-server_kafka-net
 
   recommendation-service:
@@ -69,7 +66,6 @@ services:
       - api-gateway
     networks:
       - movie-mate-network
-      - bridge
       - kafka-server_kafka-net
 
   user-service:
@@ -85,7 +81,6 @@ services:
     networks:
       - movie-mate-network
       - postgre_default
-      - bridge
       - kafka-server_kafka-net
 
   watchlist-service:
@@ -100,7 +95,6 @@ services:
       - api-gateway
     networks:
       - movie-mate-network
-      - bridge
       - kafka-server_kafka-net
 
   api-docs:

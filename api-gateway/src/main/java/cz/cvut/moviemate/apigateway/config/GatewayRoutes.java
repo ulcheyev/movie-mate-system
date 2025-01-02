@@ -11,6 +11,8 @@ import org.springframework.stereotype.Component;
 @Setter
 public class GatewayRoutes {
 
+
+
     private String userServiceUri;
     private String watchlistServiceUri;
     private String movieServiceUri;
