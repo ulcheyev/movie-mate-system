@@ -15,6 +15,6 @@ echo "Using version: $VERSION and registry: $DOCKER_REGISTRY"
 
 echo "Restarting services with Docker Compose"
 docker compose down
-docker compose up -d
+docker compose --env-file ./.env  up
 
 
