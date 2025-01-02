@@ -3,11 +3,6 @@
 BRANCH="test"
 DOCKER_REGISTRY="movie-mate"
 
-echo "Pulling the latest code from branch: $BRANCH"
-git fetch origin $BRANCH
-git checkout $BRANCH
-git pull origin $BRANCH
-
 
 mvn spring-boot:build-image -Ddocker.registry=$DOCKER_REGISTRY -DskipTests
 

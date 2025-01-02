@@ -22,6 +22,8 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no -J ${{ secrets.MANKI_SERVER_USER }}@${{ secrets.MANKI_SERVER }}:${{ secrets.MANKI_SERVER_PORT }} -p ${{ secrets.MANKI_HOME_SERVER_PORT }} ${{ secrets.MANKI_HOME_SERVER_USER }}@${{ secrets.MANKI_HOME_SERVER }} << 'EOF'
             cd ~/Documents/movie-mate-system
+            git checkout test
+            git pull origin test
             chmod +x ./overlay/deploy.sh
             bash ./overlay/deploy.sh
           EOF
