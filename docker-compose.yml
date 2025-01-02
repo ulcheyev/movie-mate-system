@@ -1,0 +1,4 @@
+version: '3.8'
+services:
+  test-hello-world:
+    image: hello-world:latest
