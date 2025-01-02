@@ -5,7 +5,7 @@ services:
     image: ${DOCKER_REGISTRY}/discovery-server:${VERSION}
     container_name: discovery-server
     ports:
-      - "${DISCOVERY_SERVER_PORT}:${DISCOVERY_SERVER_PORT}"
+      - "${MOVIE_MATE_DISCOVERY_SERVER_PORT}:${MOVIE_MATE_DISCOVERY_SERVER_PORT}"
     env_file:
       - ./.env
       - ./discovery-server/.env
