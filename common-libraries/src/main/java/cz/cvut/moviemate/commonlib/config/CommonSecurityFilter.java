@@ -6,6 +6,8 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -25,6 +27,12 @@ public class CommonSecurityFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        String authHeader = request.getHeader(Constants.AUTH_HEADER);
+
+        if (authHeader == null || !isBearerHeaderPresent(authHeader)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
         AppUserClaimsDetails appUserClaimsDetails = extractClaims(request);
         UsernamePasswordAuthenticationToken auth = getAuthentication(appUserClaimsDetails);
         SecurityContextHolder.getContext().setAuthentication(auth);
@@ -35,12 +43,14 @@ public class CommonSecurityFilter extends OncePerRequestFilter {
         String username = request.getHeader(Constants.USERNAME_HEADER);
         String email = request.getHeader(Constants.EMAIL_HEADER);
         String rolesAsString = request.getHeader(Constants.ROLES_HEADER);
+        String id = request.getHeader(Constants.USER_ID_HEADER);
+        String token = request.getHeader(Constants.AUTH_HEADER);
         // Remove the square brackets and split the string by commas
         List<String> roles = Arrays.stream(rolesAsString.replaceAll("[\\[\\]]", "")  // Remove brackets
                         .split(","))
                 .map(String::trim)
                 .toList();
-        return new AppUserClaimsDetails(username, email, roles);
+        return new AppUserClaimsDetails(id, username, email, roles, token);
     }
 
     public UsernamePasswordAuthenticationToken getAuthentication(AppUserClaimsDetails appUserClaimsDetails) {
@@ -53,10 +63,25 @@ public class CommonSecurityFilter extends OncePerRequestFilter {
                     .map(SimpleGrantedAuthority::new)
                     .collect(Collectors.toList());
 
-            return new UsernamePasswordAuthenticationToken(username, null, authorities);
+            return new UsernamePasswordAuthenticationToken(new Principal(username,
+                    appUserClaimsDetails.id()),
+                    appUserClaimsDetails.token(),
+                    authorities);
         } else {
             throw new RuntimeException("User details cannot have null fields.");
         }
+    }
+
+
+    private boolean isBearerHeaderPresent(String authHeader) {
+        return authHeader.startsWith("Bearer ");
+    }
+
+    @AllArgsConstructor
+    @Data
+    public static class Principal {
+        private String username;
+        private String id;
     }
 
 }

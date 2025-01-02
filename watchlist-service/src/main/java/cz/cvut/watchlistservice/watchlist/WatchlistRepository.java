@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface WatchlistRepository extends MongoRepository<Watchlist, String> {
-    Page<Watchlist> findAllByUsername(String username, Pageable pageable);
+    Page<Watchlist> findAllByUserId(String username, Pageable pageable);
 }

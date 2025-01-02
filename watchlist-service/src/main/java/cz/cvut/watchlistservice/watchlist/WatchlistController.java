@@ -38,15 +38,15 @@ public class WatchlistController {
         return ResponseEntity.ok(responseDTO);
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<WatchlistDTO>> getWatchlistsByUserId(
+    @GetMapping("/all-by-user")
+    public ResponseEntity<List<WatchlistDTO>> getWatchlistsByUser(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
         Pageable pageable = PageRequest.of(page, size);
         List<Watchlist> watchlists = watchlistService
-                .getWatchlistsByUsername(
-                SecurityUtils.getPrincipalUsername(SecurityContextHolder.getContext().getAuthentication()), pageable);
+                .getWatchlistsByUserId(
+                SecurityUtils.getPrincipalID(SecurityContextHolder.getContext().getAuthentication()), pageable);
         List<WatchlistDTO> responseDTOs = watchlists.stream()
                 .map(watchlistMapper::toDTO)
                 .collect(Collectors.toList());

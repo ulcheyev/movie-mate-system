@@ -1,5 +1,6 @@
 package cz.cvut.moviemate.movieservice.config.filter;
 
+import cz.cvut.moviemate.commonlib.config.CommonSecurityFilter;
 import cz.cvut.moviemate.commonlib.dto.AppUserClaimsDetails;
 import cz.cvut.moviemate.commonlib.utils.SecurityFilterUtil;
 import jakarta.servlet.FilterChain;
@@ -16,15 +17,5 @@ import java.io.IOException;
 
 @Component
 @RequiredArgsConstructor
-public class SecurityFilter extends OncePerRequestFilter {
-
-    private final SecurityFilterUtil securityFilterUtil;
-
-    @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        AppUserClaimsDetails appUserClaimsDetails = securityFilterUtil.extractClaims(request);
-        UsernamePasswordAuthenticationToken auth = securityFilterUtil.getAuthentication(appUserClaimsDetails);
-        SecurityContextHolder.getContext().setAuthentication(auth);
-        filterChain.doFilter(request, response);
-    }
+public class SecurityFilter extends CommonSecurityFilter {
 }

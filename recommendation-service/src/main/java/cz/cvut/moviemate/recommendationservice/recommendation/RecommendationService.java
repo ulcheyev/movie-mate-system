@@ -1,10 +1,8 @@
 package cz.cvut.moviemate.recommendationservice.recommendation;
 
-import cz.cvut.moviemate.recommendationservice.client.dto.MovieDto;
-
-import java.util.List;
+import cz.cvut.moviemate.commonlib.dto.events.UserSignUpEvent;
 
 public interface RecommendationService {
-    List<MovieDto> getRecommendations(String userId);
-    void syncGraphData();
+    Recommendations getRecommendations(String userId);
+    void syncGraphToNewUser(UserSignUpEvent event);
 }

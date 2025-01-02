@@ -23,6 +23,12 @@ spring:
     password: ${MOVIE_MATE_REDIS_PASSWORD}
     ttl: ${MOVIE_MATE_MOVIE_SERVICE_REDIS_TTL:-1}
 
+springdoc:
+  api-docs:
+    path: /docs
+  swagger-ui:
+    path: /docs/swagger-ui.html
+
 logging:
   level:
     org:

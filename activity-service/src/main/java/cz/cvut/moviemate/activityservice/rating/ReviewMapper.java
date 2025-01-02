@@ -20,10 +20,8 @@ public interface ReviewMapper {
     void update(@MappingTarget RatingReview entity, RatingReview updateEntity);
 
     default RatingReviewKey extractRatingReviewKey(ReviewDto reviewDto) {
-        return new RatingReviewKey(reviewDto.movieId(), SecurityUtils.getPrincipalUsername(
+        return new RatingReviewKey(reviewDto.movieId(), SecurityUtils.getPrincipalID(
                 SecurityContextHolder.getContext().getAuthentication()
-        ), reviewDto != null
-                ? reviewDto.timestamp()
-                : Instant.now());
+        ), reviewDto.timestamp() != null ? reviewDto.timestamp() : Instant.now());
     }
 }

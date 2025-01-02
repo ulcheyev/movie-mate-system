@@ -1,19 +1,37 @@
 server:
   port: ${MOVIE_MATE_RECOMMENDATION_SERVICE_PORT:7040}
+  servlet:
+    context-path: ${MOVIE_MATE_RECOMMENDATION_SERVICE_CONTEXT_PATH}
 
 spring:
   application:
     name: recommendation-service
+    api-token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6W3siYXV0aG9yaXR5IjoiUk9PVCJ9LHsiYXV0aG9yaXR5IjoiQURNSU4ifSx7ImF1dGhvcml0eSI6Ik1PREVSQVRPUiJ9LHsiYXV0aG9yaXR5IjoiVVNFUiJ9XSwiaWQiOjEsImVtYWlsIjoidWxjaGV5ZXZAZmVsLmN2dXQuY3oiLCJ1c2VybmFtZSI6InVsY2hleWV2Iiwic3ViIjoidWxjaGV5ZXYiLCJpYXQiOjE3MzUyMTM4MjcsImV4cCI6MTczNTI0OTgyN30.7mMef0T-bA_95o7FulabWRkQ5tz0ak-LkPOmIrQxFms
   neo4j:
     authentication:
       username: ${MOVIE_MATE_NEO4J_USERNAME}
       password: ${MOVIE_MATE_NEO4J_PASSWORD}
     uri: ${MOVIE_MATE_NEO4J_URI}
+  kafka:
+    bootstrap-servers: ${MOVIE_MATE_KAFKA_SERVER_URI}
+    consumer:
+      group-id: recommendation-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
 
 logging:
   level:
     org:
       springframework: INFO
+
+springdoc:
+  api-docs:
+    path: /docs
+  swagger-ui:
+    path: /docs/swagger-ui.html
 
 eureka:
   client:

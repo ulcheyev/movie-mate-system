@@ -6,11 +6,11 @@
     <parent>
         <groupId>cz.cvut</groupId>
         <artifactId>movie-mate</artifactId>
-        <version>${movie-mate.version}</version>
+        <version>1.0.2-SNAPSHOT</version>
     </parent>
 
     <artifactId>api-docs</artifactId>
-    <version>${movie-mate.version}</version>
+    <version>1.0.2-SNAPSHOT</version>
     <name>api-docs</name>
     <description>api-docs</description>
 
@@ -21,7 +21,18 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>

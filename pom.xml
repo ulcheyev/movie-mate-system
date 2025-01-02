@@ -10,23 +10,26 @@
     </parent>
 
     <properties>
-        <movie-mate.version>1.0.0-SNAPSHOT</movie-mate.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>17</java.version>
-
+        <docker.maven.plugin.version>0.39.1</docker.maven.plugin.version>
+        <docker.maven.plugin.port>8080:8080</docker.maven.plugin.port>
+        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <spring.doc.version>2.2.0</spring.doc.version>
         <spring.boot.version>3.3.1</spring.boot.version>
         <spring.cloud.version>2023.0.1</spring.cloud.version>
-        <lombok.version>1.18.24</lombok.version>
-        <mapstruct.version>1.5.5.Final</mapstruct.version>
+        <lombok.version>1.18.32</lombok.version>
+        <mapstruct.version>1.6.0.Beta1</mapstruct.version>
+        <maven.versions.plugin>2.15.0</maven.versions.plugin>
+        <mapstruct.binding.version>0.2.0</mapstruct.binding.version>
         <spring-doc.version>2.6.0</spring-doc.version>
     </properties>
 
     <groupId>cz.cvut</groupId>
     <artifactId>movie-mate</artifactId>
-    <version>${movie-mate.version}</version>
+    <version>1.0.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <modules>
@@ -75,6 +78,8 @@
         </dependencies>
     </dependencyManagement>
 
+
+
     <build>
         <plugins>
             <plugin>
@@ -87,33 +92,44 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
+                    <image>
+                        <name>${project.artifactId}:${project.version}</name>
+                    </image>
+                    <layers>
+                        <enabled>true</enabled>
+                    </layers>
                 </configuration>
             </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>17</source>
-                    <target>17</target>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.mapstruct</groupId>
                             <artifactId>mapstruct-processor</artifactId>
-                            <version>1.6.0.Beta1</version>
+                            <version>${mapstruct.version}</version>
                         </path>
-                        <!--LOMBOK-->
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
-                            <version>1.18.32</version>
+                            <version>${lombok.version}</version>
                         </path>
                         <dependency>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok-mapstruct-binding</artifactId>
-                            <version>0.2.0</version>
+                            <version>${mapstruct.binding.version}</version>
                         </dependency>
                     </annotationProcessorPaths>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>${maven.versions.plugin}</version>
             </plugin>
         </plugins>
     </build>

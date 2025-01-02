@@ -44,13 +44,13 @@ public class MovieController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping(value = "/all-by-ids", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/all-by-ids", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<MovieDetailsDto>> getMovies(@RequestBody List<String> ids) {
         log.info("Getting movies: {}", ids);
         return ResponseEntity.ok(movieService.getMovies(ids));
     }
 
-    @GetMapping(value = "/get-by-genres", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/get-by-genres", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Set<String>> getMovieIdsByGenre(@RequestBody List<String> genres) {
         log.info("Getting movies by genres: {}", genres);
         return ResponseEntity.ok(movieService.getMovieIdsByGenre(genres));

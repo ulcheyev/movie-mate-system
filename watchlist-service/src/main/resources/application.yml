@@ -21,6 +21,17 @@ spring:
       database-idx: ${MOVIE_MATE_WATCHLIST_SERVICE_DATABASE_INDEX:0}
       ttl: ${MOVIE_MATE_WATCHLIST_SERVICE_CACHE_TTL_IN_HOURS:-1}
 
+springdoc:
+  api-docs:
+    path: /docs
+  swagger-ui:
+    path: /docs/swagger-ui.html
+
+  kafka:
+    bootstrap-servers: ${MOVIE_MATE_KAFKA_SERVER_URI}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
 
 logging:

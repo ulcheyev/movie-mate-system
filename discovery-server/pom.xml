@@ -5,11 +5,11 @@
     <parent>
         <groupId>cz.cvut</groupId>
         <artifactId>movie-mate</artifactId>
-        <version>${movie-mate.version}</version>
+        <version>1.0.2-SNAPSHOT</version>
     </parent>
 
     <artifactId>discovery-server</artifactId>
-    <version>${movie-mate.version}</version>
+    <version>1.0.2-SNAPSHOT</version>
     <name>discovery-server</name>
     <description>discovery-server</description>
 

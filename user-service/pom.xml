@@ -5,11 +5,11 @@
     <parent>
         <groupId>cz.cvut</groupId>
         <artifactId>movie-mate</artifactId>
-        <version>${movie-mate.version}</version>
+        <version>1.0.2-SNAPSHOT</version>
     </parent>
 
     <artifactId>user-service</artifactId>
-    <version>${movie-mate.version}</version>
+    <version>1.0.2-SNAPSHOT</version>
     <name>user-service</name>
     <description>user-service</description>
 
@@ -31,7 +31,10 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+        </dependency>
         <!-- SPRING -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -41,6 +44,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -121,6 +125,7 @@
         <dependency>
             <groupId>cz.cvut</groupId>
             <artifactId>common-libraries</artifactId>
+            <version>${parent.version}</version>
         </dependency>
     </dependencies>
 
@@ -142,8 +147,8 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>17</source>
-                    <target>17</target>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.mapstruct</groupId>
@@ -158,7 +163,7 @@
                         <dependency>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok-mapstruct-binding</artifactId>
-                            <version>0.2.0</version>
+                            <version>${mapstruct.binding.version}</version>
                         </dependency>
                     </annotationProcessorPaths>
                 </configuration>

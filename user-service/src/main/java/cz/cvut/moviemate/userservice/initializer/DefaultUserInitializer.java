@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 @Slf4j(topic = "DEFAULT_USER_INITIALIZER")
 @RequiredArgsConstructor
 public class DefaultUserInitializer {
+
     private final InternalAppUserService internalAppUserService;
     private final PasswordEncoder passwordEncoder;
 

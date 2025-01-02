@@ -46,6 +46,7 @@ public class AuthValidationFilter implements GatewayFilter {
                     .flatMap(response -> {
                         exchange.getRequest()
                                 .mutate()
+                                .header(Constants.USER_ID_HEADER, response.id())
                                 .header(Constants.USERNAME_HEADER, response.username())
                                 .header(Constants.EMAIL_HEADER, response.email())
                                 .header(Constants.ROLES_HEADER, String.valueOf(response.roles()))

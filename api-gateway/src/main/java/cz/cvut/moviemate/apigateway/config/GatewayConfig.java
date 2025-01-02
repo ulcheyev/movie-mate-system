@@ -56,6 +56,23 @@ public class GatewayConfig {
                         )
                         .uri(gatewayRoutes.getActivityServiceUri())
                 )
+                .route(r -> r
+                        .path(gatewayRoutes.getRecommendationsBasePath().getOriginal() + "/**")
+                        .filters(f ->
+                                rewriteBasePath(f, gatewayRoutes.getRecommendationsBasePath().getOriginal(), gatewayRoutes.getRecommendationsBasePath().getTarget())
+                                        .filter(authValidationFilter)
+                        )
+                        .uri(gatewayRoutes.getRecommendationsServiceUri())
+                )
+                .route(r -> r
+                        .path(gatewayRoutes.getActivityBasePath().getOriginal() + "/**")
+                        .filters(f ->
+                                rewriteBasePath(f, gatewayRoutes.getActivityBasePath().getOriginal(), gatewayRoutes.getActivityBasePath().getTarget())
+                                        .filter(authValidationFilter)
+                        )
+                        .uri(gatewayRoutes.getActivityServiceUri())
+                )
+
                 .build();
     }
 

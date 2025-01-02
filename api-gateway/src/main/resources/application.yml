@@ -11,6 +11,7 @@ gateway:
     watchlist-service-uri: ${MOVIE_MATE_WATCHLIST_SERVICE_URI}
     movie-service-uri: ${MOVIE_MATE_MOVIE_SERVICE_URI}
     activity-service-uri: ${MOVIE_MATE_ACTIVITY_SERVICE_URI}
+    recommendations-service-uri: ${MOVIE_MATE_RECOMMENDATION_SERVICE_URI}
 
     users-base-path:
       original: ${MOVIE_MATE_GATEWAY_USERS_ORIGINAL_BASE_PATH}
@@ -27,6 +28,10 @@ gateway:
     activity-base-path:
       original: ${MOVIE_MATE_GATEWAY_ACTIVITY_ORIGINAL_BASE_PATH}
       target: ${MOVIE_MATE_GATEWAY_ACTIVITY_TARGET_BASE_PATH}
+
+    recommendations-base-path:
+      original: ${MOVIE_MATE_GATEWAY_RECOMMENDATION_ORIGINAL_BASE_PATH}
+      target: ${MOVIE_MATE_GATEWAY_RECOMMENDATION_TARGET_BASE_PATH}
 
 logging:
   level:

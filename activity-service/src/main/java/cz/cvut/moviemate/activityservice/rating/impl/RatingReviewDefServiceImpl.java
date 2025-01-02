@@ -1,6 +1,8 @@
 package cz.cvut.moviemate.activityservice.rating.impl;
 
 import cz.cvut.moviemate.activityservice.rating.*;
+import cz.cvut.moviemate.activityservice.service.KafkaEventProducer;
+import cz.cvut.moviemate.commonlib.dto.events.RatingActivityEvent;
 import cz.cvut.moviemate.commonlib.exception.InvalidArgumentException;
 import cz.cvut.moviemate.commonlib.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,7 @@ public class RatingReviewDefServiceImpl implements RatingReviewService {
 
     private final RatingReviewRepository ratingReviewRepository;
     private final ReviewMapper reviewMapper;
+    private final KafkaEventProducer kafkaEventProducer;
 
     @Override
     @Cacheable(value = "ratings", key = "#movieId", unless = "#result == null")
@@ -36,6 +39,8 @@ public class RatingReviewDefServiceImpl implements RatingReviewService {
             log.error("Invalid rating: {}. Must be between 1 and 5.", review.getRate());
             throw new InvalidArgumentException("Rating must be between 1 and 5.");
         }
+        kafkaEventProducer.publishRatingEvent(new RatingActivityEvent(review.getKey().getMovieId(),
+                review.getKey().getUserId(), review.getRate()));
         return ratingReviewRepository.save(review);
     }
 

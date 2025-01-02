@@ -15,11 +15,13 @@ public class GatewayRoutes {
     private String watchlistServiceUri;
     private String movieServiceUri;
     private String activityServiceUri;
+    private String recommendationsServiceUri;
 
     private BasePath usersBasePath;
     private BasePath watchlistsBasePath;
     private BasePath moviesBasePath;
     private BasePath activityBasePath;
+    private BasePath recommendationsBasePath;
 
 
     @Getter

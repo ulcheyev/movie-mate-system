@@ -5,11 +5,11 @@
     <parent>
         <groupId>cz.cvut</groupId>
         <artifactId>movie-mate</artifactId>
-        <version>${movie-mate.version}</version>
+        <version>1.0.2-SNAPSHOT</version>
     </parent>
 
     <artifactId>activity-service</artifactId>
-    <version>${movie-mate.version}</version>
+    <version>1.0.2-SNAPSHOT</version>
     <name>activity-service</name>
     <description>activity-service</description>
 
@@ -29,7 +29,15 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-cassandra</artifactId>
         </dependency>
-
+        <!--DOCS-->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+        </dependency>
         <!-- LOMBOK -->
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -45,6 +53,7 @@
         <dependency>
             <groupId>cz.cvut</groupId>
             <artifactId>common-libraries</artifactId>
+            <version>${parent.version}</version>
         </dependency>
 
         <!-- Spring Eureka Client -->

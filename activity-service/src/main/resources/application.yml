@@ -6,7 +6,11 @@ server:
 spring:
   application:
     name: activity-service
-
+  kafka:
+    bootstrap-servers: ${MOVIE_MATE_KAFKA_SERVER_URI}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
   cassandra:
     schema-action: CREATE_IF_NOT_EXISTS
     local-datacenter: ${MOVIE_MATE_CASSANDRA_DATACENTER}
@@ -19,6 +23,12 @@ logging:
   level:
     org:
       springframework: INFO
+
+springdoc:
+  api-docs:
+    path: /docs
+  swagger-ui:
+    path: /docs/swagger-ui.html
 
 eureka:
   client:

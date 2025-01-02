@@ -1,21 +1,25 @@
 package cz.cvut.moviemate.recommendationservice.recommendation;
 
+import cz.cvut.moviemate.commonlib.dto.GenreDto;
 import cz.cvut.moviemate.commonlib.dto.GenreResponse;
+import cz.cvut.moviemate.commonlib.dto.MovieDetailsDto;
 import cz.cvut.moviemate.commonlib.dto.events.RatingActivityEvent;
 import cz.cvut.moviemate.commonlib.dto.events.UserSignUpEvent;
 import cz.cvut.moviemate.commonlib.dto.events.WatchlistEditEvent;
+import cz.cvut.moviemate.commonlib.exception.NotFoundException;
+import cz.cvut.moviemate.commonlib.utils.StringUtil;
 import cz.cvut.moviemate.recommendationservice.client.MovieServiceClient;
+import cz.cvut.moviemate.recommendationservice.foaf.FOAFRepository;
 import cz.cvut.moviemate.recommendationservice.foaf.FOAFService;
 import cz.cvut.moviemate.recommendationservice.model.Movie;
+import cz.cvut.moviemate.recommendationservice.model.RatedRelationship;
 import cz.cvut.moviemate.recommendationservice.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static cz.cvut.moviemate.commonlib.utils.Constants.*;
@@ -26,6 +30,7 @@ public class GenreBasedRecommendationService implements RecommendationService{
 
     private final MovieServiceClient movieServiceClient;
     private final FOAFService foafService;
+    private final FOAFRepository foafRepository;
     private final MovieRepository movieRepository;
     private final static Integer RECOMMENDATIONS_QUANTITY = 6;
 
@@ -72,7 +77,7 @@ public class GenreBasedRecommendationService implements RecommendationService{
                 List<GenreResponse> topGenres = movieServiceClient.getTopGenres();
                 List<String> genresNames = new ArrayList<>();
                 for(var genre: topGenres) {
-                    genresNames.add(genre.getName());
+                    genresNames.add(genre.getId() );
                 }
                 genresNames.removeAll(preferredGenres);
                 Set<String> additionalMovies = movieServiceClient.getMovieIdsByGenre(genresNames);
@@ -97,13 +102,13 @@ public class GenreBasedRecommendationService implements RecommendationService{
 
         if (user.getInterestedIn() != null) {
             genres.addAll(user.getInterestedIn().stream()
-                    .map(ir -> ir.getMovie().getGenre())
+                    .flatMap(ir -> ir.getMovie().getGenres().stream())
                     .collect(Collectors.toSet()));
         }
 
         if (user.getRatedMovies() != null) {
             genres.addAll(user.getRatedMovies().stream()
-                    .map(rr -> rr.getMovie().getGenre())
+                    .flatMap(rr -> rr.getMovie().getGenres().stream())
                     .collect(Collectors.toSet()));
         }
 
@@ -123,7 +128,7 @@ public class GenreBasedRecommendationService implements RecommendationService{
         var topGenres = movieServiceClient.getTopGenres();
         List<String> genresNames = new ArrayList<>();
         for(var genre: topGenres) {
-            genresNames.add(genre.getName());
+            genresNames.add(genre.getId());
         }
         return movieServiceClient.getMovieIdsByGenre(genresNames);
     }
@@ -141,11 +146,44 @@ public class GenreBasedRecommendationService implements RecommendationService{
             topics = SERVICE_ACTIVITY_RATING_TOPIC,
             groupId = "recommendation-group"
     )
+    @Transactional
     public void syncGraphToUserRatingActivity(RatingActivityEvent event) {
+        String movieId = event.getMovieId();
+        Movie movie = new Movie();
+        Optional<Movie> temp = movieRepository.findById(movieId);
+        if(temp.isEmpty()) {
+            MovieDetailsDto dto = movieServiceClient.getMovie(movieId);
+            List<GenreDto> genreDtos = dto.getGenres();
+            movie.setGenres(genreDtos.stream().map(g -> StringUtil.toLowerCaseAndReplaceSpace(g.getName())).toList());
+            movie.setId(dto.getId());
+            movieRepository.save(movie);
+        } else {
+            movie = temp.get();
+        }
+
+        User user = foafService.getUserNodeOrThrow(event.getUserId());
+        Movie finalMovie = movie;
+        Optional<RatedRelationship> existingRating = user.getRatedMovies().stream()
+                .filter(r -> r.getMovie().getId().equals(finalMovie.getId()))
+                .findFirst();
+        if(existingRating.isPresent()) {
+            System.out.println("DAAAAAAAA");
+            existingRating.get().setStars(event.getStars());
+        } else {
+            RatedRelationship ratedRelationship = new RatedRelationship();
+            System.out.println("NEET: " + finalMovie.getId());
+
+            ratedRelationship.setMovie(finalMovie);
+            ratedRelationship.setStars(event.getStars());
+            if(user.getRatedMovies() == null) {
+                user.setRatedMovies(new ArrayList<>());
+            }
+            user.getRatedMovies().add(ratedRelationship);
+        }
+
+        foafRepository.save(user);
 
     }
 
-    public void syncGraphToUserSocialConnectionActivity(UserSignUpEvent event) {
 
-    }
 }

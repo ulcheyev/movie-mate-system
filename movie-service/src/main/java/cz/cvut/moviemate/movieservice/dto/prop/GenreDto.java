@@ -15,4 +15,5 @@ import java.io.Serializable;
 public class GenreDto implements Serializable {
     @NotBlank
     private String name;
+
 }
