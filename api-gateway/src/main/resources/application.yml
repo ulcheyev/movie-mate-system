@@ -14,6 +14,9 @@ gateway:
     movie-service-uri: ${MOVIE_MATE_MOVIE_SERVICE_URI}
     activity-service-uri: ${MOVIE_MATE_ACTIVITY_SERVICE_URI}
     recommendations-service-uri: ${MOVIE_MATE_RECOMMENDATION_SERVICE_URI}
+    api-docs-service-uri: ${MOVIE_MATE_API_DOCS_SERVICE_URI}
+    discovery-server-ui-uri: ${MOVIE_MATE_DISCOVERY_SERVER_UI_URL}
+
 
     users-base-path:
       original: ${MOVIE_MATE_GATEWAY_USERS_ORIGINAL_BASE_PATH}
@@ -34,6 +37,14 @@ gateway:
     recommendations-base-path:
       original: ${MOVIE_MATE_GATEWAY_RECOMMENDATION_ORIGINAL_BASE_PATH}
       target: ${MOVIE_MATE_GATEWAY_RECOMMENDATION_TARGET_BASE_PATH}
+
+    api-docs-base-path:
+      original: ${MOVIE_MATE_GATEWAY_API_DOCS_ORIGINAL_BASE_PATH}
+      target: ${MOVIE_MATE_GATEWAY_API_DOCS_TARGET_BASE_PATH}
+
+    discovery-server-base-path:
+      original: ${MOVIE_MATE_GATEWAY_DISCOVERY_SERVER_ORIGINAL_BASE_PATH}
+      target: ${MOVIE_MATE_GATEWAY_DISCOVERY_SERVER_TARGET_BASE_PATH}
 
 logging:
   level:

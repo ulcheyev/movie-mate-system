@@ -1,5 +1,7 @@
 server:
   port: ${MOVIE_MATE_API_DOCS_PORT:7777}
+  servlet:
+    context-path: ${MOVIE_MATE_BASE_CONTEXT_PATH}
 
 spring:
   application:
@@ -10,18 +12,18 @@ springdoc:
     enabled: true
     path: /docs
   swagger-ui:
-    path: /docs/swagger-ui.html
+    path: /docs/ui
     urls:
       - name: user-service
-        url: http://${API_GATEWAY_URI}/users/docs
+        url: http://${API_GATEWAY_URI}/movie-mate/users/docs
       - name: activity-service
-        url: http://${API_GATEWAY_URI}/activity/docs
+        url: http://${API_GATEWAY_URI}/movie-mate/activity/docs
       - name: movie-service
-        url: http://${API_GATEWAY_URI}/movies/docs
+        url: http://${API_GATEWAY_URI}/movie-mate/movies/docs
       - name: recommendation-service
-        url: http://${API_GATEWAY_URI}/recommendation/docs
+        url: http://${API_GATEWAY_URI}/movie-mate/recommendation/docs
       - name: watchlist-service
-        url: http://${API_GATEWAY_URI}/watchlists/docs
+        url: http://${API_GATEWAY_URI}/movie-mate/watchlists/docs
 
 
 logging:
