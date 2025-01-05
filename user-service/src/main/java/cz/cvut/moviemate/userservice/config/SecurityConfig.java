@@ -45,9 +45,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationManager authenticationManager) throws Exception {
         return http
-//                .csrf(AbstractHttpConfigurer::disable)
-//                .cors(Customizer.withDefaults())
-                .cors(AbstractHttpConfigurer::disable)
+                .csrf(AbstractHttpConfigurer::disable)
+                .cors(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(getRequestsCustomizer())
                 .authenticationManager(authenticationManager)
