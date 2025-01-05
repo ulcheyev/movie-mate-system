@@ -20,6 +20,7 @@ public class SwaggerConfig {
         return new OpenAPI()
                 .addSecurityItem(new SecurityRequirement().addList("Bearer Authentication"))
                 .components(new Components().addSecuritySchemes("Bearer Authentication", createAPIKeyScheme()))
+                .servers(List.of(new Server().url("https://themanki.net/movie-mate/users")))
                 .info(apiInfo());
     }
 
