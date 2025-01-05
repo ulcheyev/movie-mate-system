@@ -15,15 +15,15 @@ springdoc:
     path: /docs/ui
     urls:
       - name: user-service
-        url: http://${API_GATEWAY_URI}/movie-mate/users/docs
+        url: ${API_GATEWAY_URI}/movie-mate/users/docs
       - name: activity-service
-        url: http://${API_GATEWAY_URI}/movie-mate/activity/docs
+        url: ${API_GATEWAY_URI}/movie-mate/activity/docs
       - name: movie-service
-        url: http://${API_GATEWAY_URI}/movie-mate/movies/docs
+        url: ${API_GATEWAY_URI}/movie-mate/movies/docs
       - name: recommendation-service
-        url: http://${API_GATEWAY_URI}/movie-mate/recommendation/docs
+        url: ${API_GATEWAY_URI}/movie-mate/recommendation/docs
       - name: watchlist-service
-        url: http://${API_GATEWAY_URI}/movie-mate/watchlists/docs
+        url: ${API_GATEWAY_URI}/movie-mate/watchlists/docs
 
 
 logging:

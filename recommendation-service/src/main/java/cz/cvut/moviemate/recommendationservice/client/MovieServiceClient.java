@@ -20,15 +20,15 @@ import java.util.Set;
         configuration = FeignConfig.class
 )
 public interface MovieServiceClient {
-    @GetMapping(value = "/movies/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/movie-mate/movies/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     MovieDetailsDto getMovie(@PathVariable String id);
 
-    @PostMapping(value = "/movies/all-by-ids", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/movie-mate/movies/all-by-ids", produces = MediaType.APPLICATION_JSON_VALUE)
     List<MovieDetailsDto> getMovies(@RequestBody List<String> ids);
 
-    @GetMapping(value = "/movies/genre/top", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/movie-mate/movies/genre/top", produces = MediaType.APPLICATION_JSON_VALUE)
     List<GenreResponse> getTopGenres();
 
-    @PostMapping(value = "/movies/get-by-genres", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/movie-mate/movies/get-by-genres", produces = MediaType.APPLICATION_JSON_VALUE)
     Set<String> getMovieIdsByGenre(@RequestBody List<String> genres);
 }
