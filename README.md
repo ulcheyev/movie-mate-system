@@ -13,19 +13,18 @@ recommendations and social interaction.
   guidelines.
 
 ## Technology Stack
-
 * Programming Language: Java
 * Framework: Spring Boot
 * Event handling: Kafka
 * Build Tool: Maven
 * | **Component**                       | **Database System** | **Justification**                                                                                                                                         |
-      |-------------------------------------|---------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+  |-------------------------------------|---------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
   | User accounts and authentication    | PostgreSQL          | Utilizes ACID transactions to ensure secure and consistent handling of user data and authentication processes.                                            |
   | Movie recommendations and social connections | Neo4j           | Allows faster traversal of relationships between users, movies, and interactions, ideal for generating personalized recommendations.                          |
   | Movie metadata                      | MongoDB             | Movie metadata is often semi-structured with flexible and varied attributes like cast, genres, synopses, and reviews.                                        |
   | Ratings, reviews, activity logs     | Cassandra           | Provides high write throughput, enabling efficient real-time storage of user ratings, reviews, and activity logs.                                           |
   | Watchlist management                | Redis + MongoDB     | Ensures fast updates to watchlists for frequent access, while MongoDB handles long-term, persistent storage of watchlist data.                                 |
-  | Caching frequently accessed data    | Redis               | Used for caching to enhance performance by reducing access time to frequently used data.                                                                      |
+  | Caching frequently accessed data    | Redis               | Used for caching to enhance performance by reducing access time to frequently used data.                                                      |
 
 ## Getting Started
 
