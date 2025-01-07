@@ -2,6 +2,7 @@ package cz.cvut.moviemate.movieservice.service.impl;
 
 import cz.cvut.moviemate.commonlib.exception.DuplicateException;
 import cz.cvut.moviemate.commonlib.exception.NotFoundException;
+import cz.cvut.moviemate.commonlib.utils.CommonUtil;
 import cz.cvut.moviemate.movieservice.dto.*;
 import cz.cvut.moviemate.movieservice.dto.mapper.BaseMapper;
 import cz.cvut.moviemate.movieservice.dto.mapper.GenreMapper;
@@ -25,7 +26,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -105,6 +108,16 @@ public class BaseMovieService implements MovieService {
     }
 
     @Override
+    public List<GenreResponse> getTopGenres() {
+        List<String> top = movieRepository.getTopGenres();
+
+        return top.stream()
+                .map(this::getGenre)
+                .map(genreMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     @Caching(
             evict = {
                     @CacheEvict(value = "genres", key = "'all'"),
@@ -171,10 +184,34 @@ public class BaseMovieService implements MovieService {
     }
 
     @Override
+    @Cacheable(value = "movies-ids", key = "#ids")
+    public List<MovieDetailsDto> getMovies(List<String> ids) {
+        return movieRepository.findByIdIn(ids).stream().map(
+                movieMapper::toDetailsDto
+        ).toList();
+    }
+
+    @Override
+    public Set<String> getMovieIdsByGenre(List<String> genres) {
+        Set<String> ids = new HashSet<>();
+        List<Genre> gs = genres.stream().map(this::getGenre).toList();
+
+        for (Genre g : gs) {
+            List<String> movies = movieRepository.findByGenresContains(g).stream()
+                    .map(Movie::getId)
+                    .toList();
+            ids.add(movies.get(CommonUtil.getRandomInt(movies.size())));
+        }
+
+        return ids;
+    }
+
+    @Override
     @Caching(
             evict = {
                     @CacheEvict(value = "movies", key = "#id"),
-                    @CacheEvict(value = "page", allEntries = true)
+                    @CacheEvict(value = "page", allEntries = true),
+                    @CacheEvict(value = "movies-ids", allEntries = true)
             }
     )
     public MessageResponse deleteMovie(String id) {
@@ -187,7 +224,10 @@ public class BaseMovieService implements MovieService {
     @Override
     @Caching(
             put = @CachePut(value = "movies", key = "#id"),
-            evict = @CacheEvict(value = "page", allEntries = true)
+            evict = {
+                    @CacheEvict(value = "page", allEntries = true),
+                    @CacheEvict(value = "movies-ids", allEntries = true)
+            }
     )
     public MovieDetailsDto updateMovie(String id, MovieRequestDto movieDto) {
         if (isMovieExistsByTitle(movieDto.title()))

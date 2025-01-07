@@ -1,7 +1,8 @@
 # MovieMate Discovery Server
 
-The Discovery Server is a central registry for managing service 
-instances in the MovieMate application. It enables dynamic service discovery, load balancing, and fault tolerance using Eureka.
+The Discovery Server is a central registry for managing service
+instances in the MovieMate application. It enables dynamic service discovery, load balancing, and fault tolerance using
+Eureka.
 
 ---
 
@@ -15,7 +16,9 @@ instances in the MovieMate application. It enables dynamic service discovery, lo
 ---
 
 ## Environment Variables
+
 The Discovery Server can be configured using the following environment variables:
+
 ```bash
 MOVIE_MATE_DISCOVERY_SERVER_PORT= #default is 7070
 ```

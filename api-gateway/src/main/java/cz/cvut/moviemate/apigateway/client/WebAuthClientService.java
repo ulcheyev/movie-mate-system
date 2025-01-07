@@ -12,9 +12,8 @@ import reactor.core.publisher.Mono;
 @Component
 public class WebAuthClientService {
 
-    private WebClient webClient;
     private final WebClient.Builder builder;
-
+    private WebClient webClient;
     @Value("${MOVIE_MATE_USER_SERVICE_URI}")
     private String userServiceUri;
 

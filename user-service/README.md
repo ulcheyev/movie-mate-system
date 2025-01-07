@@ -1,7 +1,7 @@
 # MovieMate User Service
 
-The User Service is a core component of the MovieMate application, responsible for 
-managing user-related functionality such as authentication, registration, and profile 
+The User Service is a core component of the MovieMate application, responsible for
+managing user-related functionality such as authentication, registration, and profile
 management. It communicates with other services through the Discovery Server and API Gateway.
 
 ---
@@ -25,7 +25,9 @@ Before running the User Service, ensure the following prerequisites are met:
 ---
 
 ## Environment Variables
+
 The User Service configuration is controlled using the following environment variables:
+
 ```bash
 MOVIE_MATE_USER_SERVICE_PORT= # optional (default 7030)
 MOVIE_MATE_USER_SERVICE_CONTEXT_PATH= # optional (default /api/v1)

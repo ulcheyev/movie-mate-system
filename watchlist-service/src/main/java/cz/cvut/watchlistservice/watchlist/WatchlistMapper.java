@@ -13,7 +13,7 @@ public interface WatchlistMapper {
 
     WatchlistDTO toDTO(Watchlist watchlist);
 
-    @Mapping(target = "username", ignore = true)
+    @Mapping(target = "userId", ignore = true)
     Watchlist toEntity(WatchlistDTO watchlistDTO);
 
     void update(@MappingTarget Watchlist entity, Watchlist updateEntity);

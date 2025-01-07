@@ -11,7 +11,6 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GenericSpecification<T> implements Specification<T> {
-    private transient SearchCriteria criteria;
     private final transient Map<SearchOperation, Handler<T>> HANDLERS = Map.ofEntries(
             Map.entry(SearchOperation.EQUAL, new EqualHandler<>()),
             Map.entry(SearchOperation.NEGATION, new NegationHandler<>()),
@@ -20,6 +19,7 @@ public class GenericSpecification<T> implements Specification<T> {
             Map.entry(SearchOperation.LESS_THAN, new LessThanHandler<>()),
             Map.entry(SearchOperation.CONTAIN, new ContainHandler<>())
     );
+    private transient SearchCriteria criteria;
 
     @Override
     public Predicate toPredicate(Root<T> root, CriteriaQuery<?> query, CriteriaBuilder cb) {

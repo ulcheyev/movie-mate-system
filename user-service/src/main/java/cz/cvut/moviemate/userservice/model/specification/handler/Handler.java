@@ -12,7 +12,7 @@ public abstract class Handler<T> {
         return cb.lower(root.get(key).as(String.class));
     }
 
-    protected Expression<String> dateValueToString (Expression<String> key, CriteriaBuilder cb) {
+    protected Expression<String> dateValueToString(Expression<String> key, CriteriaBuilder cb) {
         return cb.function(
                 "to_char",
                 String.class,

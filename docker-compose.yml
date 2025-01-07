@@ -1,0 +1,123 @@
+version: '3.8'
+
+services:
+  discovery-server:
+    image: ${DOCKER_REGISTRY}/discovery-server:${VERSION}
+    container_name: discovery-server
+    ports:
+      - "${MOVIE_MATE_DISCOVERY_SERVER_PORT}:${MOVIE_MATE_DISCOVERY_SERVER_PORT}"
+    env_file:
+      - ./.env
+      - ./discovery-server/.env
+    networks:
+      - movie-mate-network
+
+  api-gateway:
+    image: ${DOCKER_REGISTRY}/api-gateway:${VERSION}
+    container_name: api-gateway
+    ports:
+      - "${MOVIE_MATE_API_GATEWAY_PORT}:${MOVIE_MATE_API_GATEWAY_PORT}"
+    env_file:
+      - ./.env
+      - ./api-gateway/.env
+    depends_on:
+      - discovery-server
+    networks:
+      - movie-mate-network
+      - kafka-server_kafka-net
+
+  movie-service:
+    image: ${DOCKER_REGISTRY}/movie-service:${VERSION}
+    container_name: movie-service
+    ports:
+      - "${MOVIE_MATE_MOVIE_SERVICE_PORT}:${MOVIE_MATE_MOVIE_SERVICE_PORT}"
+    env_file:
+      - ./.env
+      - ./movie-service/.env
+    depends_on:
+      - api-gateway
+    networks:
+      - movie-mate-network
+      - kafka-server_kafka-net
+
+  activity-service:
+    image: ${DOCKER_REGISTRY}/activity-service:${VERSION}
+    container_name: activity-service
+    ports:
+      - "${MOVIE_MATE_ACTIVITY_SERVICE_PORT}:${MOVIE_MATE_ACTIVITY_SERVICE_PORT}"
+    env_file:
+      - ./.env
+      - ./activity-service/.env
+    depends_on:
+      - api-gateway
+    networks:
+      - movie-mate-network
+      - kafka-server_kafka-net
+
+  recommendation-service:
+    image: ${DOCKER_REGISTRY}/recommendation-service:${VERSION}
+    container_name: recommendation-service
+    ports:
+      - "${MOVIE_MATE_RECOMMENDATION_SERVICE_PORT}:${MOVIE_MATE_RECOMMENDATION_SERVICE_PORT}"
+    env_file:
+      - ./.env
+      - ./recommendation-service/.env
+    depends_on:
+      - api-gateway
+    networks:
+      - movie-mate-network
+      - kafka-server_kafka-net
+
+  user-service:
+    image: ${DOCKER_REGISTRY}/user-service:${VERSION}
+    container_name: user-service
+    ports:
+      - "${MOVIE_MATE_USER_SERVICE_PORT}:${MOVIE_MATE_USER_SERVICE_PORT}"
+    env_file:
+      - ./.env
+      - ./user-service/.env
+    depends_on:
+      - api-gateway
+    networks:
+      - movie-mate-network
+      - postgre_default
+      - kafka-server_kafka-net
+
+  watchlist-service:
+    image: ${DOCKER_REGISTRY}/watchlist-service:${VERSION}
+    container_name: watchlist-service
+    ports:
+      - "${MOVIE_MATE_WATCHLIST_SERVICE_PORT}:${MOVIE_MATE_WATCHLIST_SERVICE_PORT}"
+    env_file:
+      - ./.env
+      - ./watchlist-service/.env
+    depends_on:
+      - api-gateway
+    networks:
+      - movie-mate-network
+      - kafka-server_kafka-net
+
+  api-docs:
+    image: ${DOCKER_REGISTRY}/api-docs:${VERSION}
+    container_name: api-docs
+    ports:
+      - "${MOVIE_MATE_API_DOCS_PORT}:${MOVIE_MATE_API_DOCS_PORT}"
+    env_file:
+      - ./.env
+      - ./api-docs/.env
+    depends_on:
+      - movie-service
+      - activity-service
+      - recommendation-service
+      - user-service
+      - watchlist-service
+    networks:
+      - movie-mate-network
+
+networks:
+  movie-mate-network:
+    driver: bridge
+  postgre_default:
+    external: true
+  kafka-server_kafka-net:
+    external: true

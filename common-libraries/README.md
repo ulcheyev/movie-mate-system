@@ -1,7 +1,9 @@
 # MovieMate Common Libraries
 
-The **MovieMate Common Libraries** provide shared utilities, components, and configurations that can be reused across all MovieMate services. 
-These libraries are designed to promote code reusability, reduce duplication, and maintain consistency across the application ecosystem.
+The **MovieMate Common Libraries** provide shared utilities, components, and configurations that can be reused across
+all MovieMate services.
+These libraries are designed to promote code reusability, reduce duplication, and maintain consistency across the
+application ecosystem.
 
 ---
 
@@ -14,10 +16,10 @@ These libraries are designed to promote code reusability, reduce duplication, an
 
 ---
 
-
 ## How to Include in Your Project
 
 ### Maven Dependency
+
 To use the common libraries in project, add the following dependency to  `pom.xml`:
 
 ```xml

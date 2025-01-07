@@ -88,14 +88,14 @@ public class BaseAppUserService implements InternalAppUserService, ExternalAppUs
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-       final AppUser appUser = findUserByUsername(username);
-       return User.builder()
-               .username(appUser.getUsername())
-               .password(appUser.getPassword())
-               .authorities(appUser.getAuthorities())
-               .accountLocked(!appUser.getNotBanned())
-               .disabled(!appUser.getEnabled())
-               .build();
+        final AppUser appUser = findUserByUsername(username);
+        return User.builder()
+                .username(appUser.getUsername())
+                .password(appUser.getPassword())
+                .authorities(appUser.getAuthorities())
+                .accountLocked(!appUser.getNotBanned())
+                .disabled(!appUser.getEnabled())
+                .build();
     }
 
     @Override

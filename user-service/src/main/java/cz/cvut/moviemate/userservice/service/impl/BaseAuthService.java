@@ -1,6 +1,7 @@
 package cz.cvut.moviemate.userservice.service.impl;
 
 import cz.cvut.moviemate.commonlib.dto.AppUserClaimsDetails;
+import cz.cvut.moviemate.commonlib.dto.events.UserSignUpEvent;
 import cz.cvut.moviemate.userservice.dto.*;
 import cz.cvut.moviemate.userservice.dto.mapper.AppUserMapper;
 import cz.cvut.moviemate.userservice.exception.JwtErrorException;
@@ -9,6 +10,7 @@ import cz.cvut.moviemate.userservice.model.Role;
 import cz.cvut.moviemate.userservice.model.UserRole;
 import cz.cvut.moviemate.userservice.service.AuthService;
 import cz.cvut.moviemate.userservice.service.InternalAppUserService;
+import cz.cvut.moviemate.userservice.service.SignKafkaEventPublisher;
 import cz.cvut.moviemate.userservice.service.TokenService;
 import cz.cvut.moviemate.userservice.util.ValidationUtil;
 import io.jsonwebtoken.JwtException;
@@ -32,6 +34,7 @@ public class BaseAuthService implements AuthService {
     private final ValidationUtil validationUtil;
     private final AuthenticationManager authManager;
     private final PasswordEncoder passwordEncoder;
+    private final SignKafkaEventPublisher signKafkaEventPublisher;
 
     @Override
     @Transactional
@@ -67,7 +70,7 @@ public class BaseAuthService implements AuthService {
                 .build();
         appUser.addRole(userRole);
         AppUser saved = internalAppUserService.save(appUser);
-
+        signKafkaEventPublisher.publishSignUpEvent(new UserSignUpEvent(saved.getId(), saved.getUsername(), saved.getEmail()));
         return buildResponse(saved);
     }
 
@@ -104,8 +107,8 @@ public class BaseAuthService implements AuthService {
     }
 
     private void validateRegisterRequest(RegisterRequest registerRequest) {
-       validationUtil.checkDuplicate(registerRequest.username().toLowerCase(), internalAppUserService::findUserByUsername, "username");
-       validationUtil.checkDuplicate(registerRequest.email(), internalAppUserService::findUserByEmail, "email");
+        validationUtil.checkDuplicate(registerRequest.username().toLowerCase(), internalAppUserService::findUserByUsername, "username");
+        validationUtil.checkDuplicate(registerRequest.email(), internalAppUserService::findUserByEmail, "email");
     }
 
 
@@ -116,9 +119,11 @@ public class BaseAuthService implements AuthService {
             AppUser appUser = internalAppUserService.findUserByUsername(username);
             List<String> roleNames = appUserMapper.rolesToString(appUser);
             return new AppUserClaimsDetails(
+                    String.valueOf(appUser.getId()),
                     appUser.getUsername(),
                     appUser.getEmail(),
-                    roleNames
+                    roleNames,
+                    token
             );
         } catch (io.jsonwebtoken.JwtException ex) {
             log.error("Access token is invalid: {}", ex.getMessage());

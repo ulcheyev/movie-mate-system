@@ -1,11 +1,38 @@
 server:
   port: ${MOVIE_MATE_ACTIVITY_SERVICE_PORT:7050}
+  servlet:
+    context-path: ${MOVIE_MATE_ACTIVITY_SERVICE_CONTEXT_PATH:/api/v1}
 
 spring:
   application:
     name: activity-service
+  kafka:
+    bootstrap-servers: ${MOVIE_MATE_KAFKA_SERVER_URI}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+  cassandra:
+    schema-action: CREATE_IF_NOT_EXISTS
+    local-datacenter: ${MOVIE_MATE_CASSANDRA_DATACENTER}
+    keyspace-name: ${MOVIE_MATE_ACTIVITY_SERVICE_CASSANDRA_KEYSPACE}
+    contact-points: ${MOVIE_MATE_CASSANDRA_CONTACT_POINTS}
+    replication-factor: ${MOVIE_MATE_ACTIVITY_SERVICE_CASSANDRA_REPLICATION_FACTOR}
+
 
 logging:
   level:
     org:
       springframework: INFO
+
+springdoc:
+  api-docs:
+    path: /docs
+  swagger-ui:
+    path: /docs/swagger-ui.html
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${MOVIE_MATE_DISCOVERY_SERVER_URL}
+    registerWithEureka: true
+    fetchRegistry: true

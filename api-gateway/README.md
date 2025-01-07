@@ -1,6 +1,6 @@
 # MovieMate API Gateway Service
 
-The API Gateway service is a central point for routing and request validation for the MovieMate application. 
+The API Gateway service is a central point for routing and request validation for the MovieMate application.
 It handles dynamic routing services, authentication validation, and load balancing using Eureka.
 
 ---
@@ -37,6 +37,7 @@ MOVIE_MATE_DISCOVERY_SERVER_URL=http://moviemate:60600/eureka
 # Load balancer: services URI
 MOVIE_MATE_USER_SERVICE_URI=lb://USER-SERVICE
 MOVIE_MATE_WATCHLIST_SERVICE_URI=lb://WATCHLIST-SERVICE
+MOVIE_MATE_ACTIVITY_SERVICE_URI=lb://ACTIVITY
 
 # Necessary services
 MOVIE_MATE_USER_SERVICE_AUTH_API_PATH=/users/auth
@@ -48,5 +49,8 @@ MOVIE_MATE_GATEWAY_USERS_TARGET_BASE_PATH=/users/api
 
 MOVIE_MATE_GATEWAY_WATCHLISTS_ORIGINAL_BASE_PATH=/watchlists
 MOVIE_MATE_GATEWAY_WATCHLISTS_TARGET_BASE_PATH=/watchlists/api
+
+MOVIE_MATE_GATEWAY_ACTIVITY_ORIGINAL_BASE_PATH=/activities
+MOVIE_MATE_GATEWAY_ACTIVITY_TARGET_BASE_PATH=/activity/api
 ```
 

@@ -30,14 +30,14 @@ public class WatchlistServiceDefImplTest {
     public void testCreateWatchlist() {
 
         Watchlist watchlist = Watchlist.builder()
-                .username("user1")
+                .userId("user1")
                 .name("Favorites")
                 .moviesId(Arrays.asList("tt1375666", "tt0133093"))
                 .build();
 
         Watchlist savedWatchlist = Watchlist.builder()
                 .id("wl1")
-                .username("user1")
+                .userId("user1")
                 .name("Favorites")
                 .moviesId(Arrays.asList("tt1375666", "tt0133093"))
                 .dateCreated(LocalDate.now())
@@ -56,7 +56,7 @@ public class WatchlistServiceDefImplTest {
     public void testGetWatchlistById() {
         Watchlist watchlist = Watchlist.builder()
                 .id("wl1")
-                .username("user1")
+                .userId("user1")
                 .name("Favorites")
                 .moviesId(Arrays.asList("tt1375666", "tt0133093"))
                 .dateCreated(LocalDate.now())
@@ -75,7 +75,7 @@ public class WatchlistServiceDefImplTest {
     public void testUpdateWatchlist() {
         Watchlist existingWatchlist = Watchlist.builder()
                 .id("wl1")
-                .username("user1")
+                .userId("user1")
                 .name("Favorites")
                 .moviesId(Arrays.asList("tt1375666", "tt0133093"))
                 .dateCreated(LocalDate.now())
@@ -83,7 +83,7 @@ public class WatchlistServiceDefImplTest {
 
         Watchlist updatedWatchlist = Watchlist.builder()
                 .id("wl1")
-                .username("user1")
+                .userId("user1")
                 .name("Updated Favorites")
                 .moviesId(Arrays.asList("tt1375666", "tt0133093", "tt0468569"))
                 .dateCreated(LocalDate.now())

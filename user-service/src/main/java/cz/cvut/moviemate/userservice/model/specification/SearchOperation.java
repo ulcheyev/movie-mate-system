@@ -18,10 +18,10 @@ public enum SearchOperation {
     GREATER_THAN('<'),
     LESS_THAN('>');
 
-    private final char opChar;
     private static final Map<Character, SearchOperation> OPERATION_MAP = Stream
             .of(SearchOperation.values())
             .collect(Collectors.toMap(SearchOperation::getOpChar, operation -> operation));
+    private final char opChar;
 
     public static SearchOperation getOperation(char opChar) {
         return OPERATION_MAP.getOrDefault(opChar, null);

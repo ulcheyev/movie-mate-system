@@ -9,20 +9,25 @@ spring:
 
   data:
     mongodb:
-      authentication-database: ${MOVIE_MATE_MOVIE_SERVICE_MONGO_AUTH_DB}
-      username: ${MOVIE_MATE_MOVIE_SERVICE_MONGO_USERNAME}
-      password: ${MOVIE_MATE_MOVIE_SERVICE_MONGO_PASSWORD}
+#      username: ${MOVIE_MATE_MONGO_USERNAME}
+#      password: ${MOVIE_MATE_MONGO_PASSWORD}
       database: ${MOVIE_MATE_MOVIE_SERVICE_MONGO_DB}
-      host: ${MOVIE_MATE_MOVIE_SERVICE_MONGO_HOST}
-      port: ${MOVIE_MATE_MOVIE_SERVICE_MONGO_PORT}
+      host: ${MOVIE_MATE_MONGO_HOST}
+      port: ${MOVIE_MATE_MONGO_PORT}
 
   cache:
     type: redis
-    host: ${MOVIE_MATE_MOVIE_SERVICE_REDIS_HOST}
-    port: ${MOVIE_MATE_MOVIE_SERVICE_REDIS_PORT:6379}
+    host: ${MOVIE_MATE_REDIS_HOST}
+    port: ${MOVIE_MATE_REDIS_PORT:6379}
     database-idx: ${MOVIE_MATE_MOVIE_SERVICE_DATABASE_INDEX:1}
-    password: ${MOVIE_MATE_MOVIE_SERVICE_REDIS_PASSWORD}
-    ttl: ${MOVIE_MATE_MOVIE_SERVICE_REDIS_TTL}
+    password: ${MOVIE_MATE_REDIS_PASSWORD}
+    ttl: ${MOVIE_MATE_MOVIE_SERVICE_REDIS_TTL:-1}
+
+springdoc:
+  api-docs:
+    path: /docs
+  swagger-ui:
+    path: /docs/swagger-ui.html
 
 logging:
   level:

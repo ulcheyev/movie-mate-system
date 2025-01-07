@@ -7,7 +7,7 @@ import java.util.List;
 public interface WatchlistService {
     Watchlist createWatchlist(Watchlist watchlist);
     Watchlist getWatchlistById(String id);
-    List<Watchlist> getWatchlistsByUsername(String userId, Pageable pageable);
+    List<Watchlist> getWatchlistsByUserId(String userId, Pageable pageable);
     Watchlist updateWatchlist(String id, Watchlist watchlist);
     void deleteWatchlist(String id);
 }

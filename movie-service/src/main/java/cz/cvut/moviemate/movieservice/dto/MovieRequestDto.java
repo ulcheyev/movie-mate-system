@@ -16,4 +16,5 @@ public record MovieRequestDto(
         String synopsis,
         LocalDateTime releaseDate,
         String language
-) implements Serializable {}
+) implements Serializable {
+}

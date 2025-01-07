@@ -16,6 +16,12 @@ spring:
       #        show_sql: true
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+  kafka:
+    bootstrap-servers: ${MOVIE_MATE_KAFKA_SERVER_URI}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
 
 
   cache:

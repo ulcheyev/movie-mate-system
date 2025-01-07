@@ -13,5 +13,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class GenreDto implements Serializable {
-    @NotBlank private String name;
+    @NotBlank
+    private String name;
+
 }

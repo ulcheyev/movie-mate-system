@@ -9,6 +9,6 @@ public class PageKeyGenerator implements KeyGenerator {
 
     @Override
     public Object generate(Object target, Method method, Object... params) {
-        return  StringUtils.arrayToDelimitedString(params, ":");
+        return StringUtils.arrayToDelimitedString(params, ":");
     }
 }

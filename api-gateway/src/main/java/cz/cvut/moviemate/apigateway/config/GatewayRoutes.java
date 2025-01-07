@@ -11,13 +11,24 @@ import org.springframework.stereotype.Component;
 @Setter
 public class GatewayRoutes {
 
+
+
     private String userServiceUri;
     private String watchlistServiceUri;
     private String movieServiceUri;
+    private String activityServiceUri;
+    private String recommendationsServiceUri;
+    private String apiDocsServiceUri;
+    private String discoveryServerUiUri;
 
     private BasePath usersBasePath;
     private BasePath watchlistsBasePath;
     private BasePath moviesBasePath;
+    private BasePath activityBasePath;
+    private BasePath recommendationsBasePath;
+    private BasePath apiDocsBasePath;
+    private BasePath discoveryServerBasePath;
+
 
     @Getter
     @Setter

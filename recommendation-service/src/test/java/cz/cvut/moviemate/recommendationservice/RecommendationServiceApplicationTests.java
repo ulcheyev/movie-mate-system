@@ -1,13 +1,13 @@
 package cz.cvut.moviemate.recommendationservice;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class RecommendationServiceApplicationTests {
+public class RecommendationServiceApplicationTests {
 
     @Test
-    void contextLoads() {
+    public void contextLoads() {
     }
 
 }

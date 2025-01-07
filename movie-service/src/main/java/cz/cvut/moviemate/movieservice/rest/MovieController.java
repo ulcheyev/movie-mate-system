@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping
@@ -29,11 +30,30 @@ public class MovieController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping(value = "/genre/top", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<GenreResponse>> getTopGenres() {
+        log.info("Getting top genres");
+        List<GenreResponse> response = movieService.getTopGenres();
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<MovieDetailsDto> getMovie(@PathVariable String id) {
         log.info("Getting movie: {}", id);
         MovieDetailsDto response = movieService.getMovie(id);
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping(value = "/all-by-ids", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<MovieDetailsDto>> getMovies(@RequestBody List<String> ids) {
+        log.info("Getting movies: {}", ids);
+        return ResponseEntity.ok(movieService.getMovies(ids));
+    }
+
+    @PostMapping(value = "/get-by-genres", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Set<String>> getMovieIdsByGenre(@RequestBody List<String> genres) {
+        log.info("Getting movies by genres: {}", genres);
+        return ResponseEntity.ok(movieService.getMovieIdsByGenre(genres));
     }
 
     @GetMapping(value = "/all", produces = MediaType.APPLICATION_JSON_VALUE)

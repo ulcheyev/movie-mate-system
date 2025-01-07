@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 @Slf4j(topic = "DEFAULT_USER_INITIALIZER")
 @RequiredArgsConstructor
 public class DefaultUserInitializer {
+
     private final InternalAppUserService internalAppUserService;
     private final PasswordEncoder passwordEncoder;
 
@@ -33,7 +34,8 @@ public class DefaultUserInitializer {
     public CommandLineRunner init() {
         try {
             if (internalAppUserService.findUserByUsername(rootUsername) != null)
-                return args -> {};
+                return args -> {
+                };
         } catch (NotFoundException ignored) {
             // ignored
         }
@@ -54,7 +56,7 @@ public class DefaultUserInitializer {
 
     private UserRole[] initializeRootRole() {
         UserRole[] roles = new UserRole[Role.values().length];
-        for (int i = 0; i < roles.length; i++){
+        for (int i = 0; i < roles.length; i++) {
             try {
                 roles[i] = internalAppUserService.findUserRoleByRole(Role.values()[i]);
             } catch (NotFoundException ex) { // first start -- roles are null

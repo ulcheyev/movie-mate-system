@@ -16,7 +16,7 @@ public class RouteValidator {
 
     @PostConstruct
     protected void  init() {
-        unprotectedURLs = List.of(authApiPath);
+        unprotectedURLs = List.of(authApiPath, "/docs", "/lb-server");
     }
 
     public boolean isSecured(ServerHttpRequest request) {

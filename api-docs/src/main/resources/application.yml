@@ -1,12 +1,40 @@
 server:
-  port: ${MOVIE_MATE_API_DOCS_PORT:7010}
+  port: ${MOVIE_MATE_API_DOCS_PORT:7777}
+  servlet:
+    context-path: ${MOVIE_MATE_BASE_CONTEXT_PATH}
 
 spring:
   application:
     name: api-docs
 
+springdoc:
+  api-docs:
+    enabled: true
+    path: /docs
+  swagger-ui:
+    path: /docs/ui
+    urls:
+      - name: user-service
+        url: http://${API_GATEWAY_URI}/movie-mate/users/docs
+      - name: activity-service
+        url: http://${API_GATEWAY_URI}/movie-mate/activity/docs
+      - name: movie-service
+        url: http://${API_GATEWAY_URI}/movie-mate/movies/docs
+      - name: recommendation-service
+        url: http://${API_GATEWAY_URI}/movie-mate/recommendation/docs
+      - name: watchlist-service
+        url: http://${API_GATEWAY_URI}/movie-mate/watchlists/docs
+
+
 logging:
   level:
     org:
       springframework: INFO
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${MOVIE_MATE_DISCOVERY_SERVER_URL}
+    registerWithEureka: true
+    fetchRegistry: true
 
